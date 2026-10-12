@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pinnacle Bay - Dashboard Portal</title>
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Global Admin Return & Oversight Injection Script -->
+  <script src="/js/admin-oversight.js"></script>
+  
+  <style>
+    :root {
+      --primary-dark: #0f172a;
+      --secondary-dark: #1e293b;
+      --accent-gold: #c5a880;
+      --accent-gold-hover: #b3946c;
+      --text-white: #f8fafc;
+      --text-gray: #94a3b8;
+      --text-muted: #64748b;
+      --border-color: #334155;
+      --success-color: #10b981;
+      --font-outfit: 'Outfit', sans-serif;
+      --font-inter: 'Inter', sans-serif;
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-inter);
+      background-color: var(--primary-dark);
+      color: var(--text-white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      opacity: 0; /* Wait for auth verification to display body */
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    /* Header Navigation Shell */
+    .dashboard-header {
+      background-color: var(--secondary-dark);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand-logo svg {
+      width: 32px;
+      height: 32px;
+      fill: var(--accent-gold);
+    }
+
+    .brand-logo-text {
+      font-family: var(--font-outfit);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+    }
+
+    .brand-logo-text span {
+      color: var(--accent-gold);
+    }
+
+    .user-profile-widget {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .user-badge {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .user-role {
+      font-size: 0.75rem;
+      color: var(--accent-gold);
+      font-family: var(--font-outfit);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .btn-logout {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-gray);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-logout:hover {
+      border-color: #f43f5e;
+      color: #f43f5e;
+      background-color: rgba(244, 63, 94, 0.05);
+    }
+
+    /* Main Dashboard Layout */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 2.5rem auto;
+      padding: 0 2rem;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+
+    /* Left: Work Area Panel */
+    .main-panel {
+      background-color: var(--secondary-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2.5rem;
+    }
+
+    .welcome-section h1 {
+      font-family: var(--font-outfit);
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text-white);
+    }
+
+    .welcome-section h1 span {
+      color: var(--accent-gold);
+    }
+
+    .welcome-section p {
+      color: var(--text-gray);
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+
+    /* Role Specific Panel Content */
+    .role-action-box {
+      background-color: rgba(197, 168, 128, 0.05);
+      border: 1px solid rgba(197, 168, 128, 0.15);
+      border-radius: 10px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .role-action-title {
+      font-family: var(--font-outfit);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .role-action-title svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .role-action-desc {
+      color: var(--text-gray);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .next-phase-info {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      border-top: 1px dashed var(--border-color);
+      padding-top: 1rem;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Right: Metadata Panel */
+    .metadata-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .card {
+      background-color: var(--secondary-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .card-title {
+      font-family: var(--font-outfit);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-gray);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+
+    .meta-item {
+      margin-bottom: 1rem;
+    }
+
+    .meta-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .meta-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+    }
+
+    .meta-value {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-white);
+      word-break: break-all;
+    }
+
+    .meta-value.role-tag {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      background-color: rgba(197, 168, 128, 0.15);
+      color: var(--accent-gold);
+      border: 1px solid rgba(197, 168, 128, 0.3);
+    }
+
+    /* Collapsible JSON Container */
+    .collapsible-header {
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .collapsible-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .token-box {
+      background-color: var(--primary-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: var(--accent-gold);
+      word-break: break-all;
+      overflow-y: auto;
+      max-height: 120px;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Shell -->
+  <header class="dashboard-header">
+    <div class="brand-logo">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2L2 22h20L12 2zm0 3.99L18.47 18H5.53L12 5.99zM11 10h2v4h-2zm0 5h2v2h-2z"/>
+      </svg>
+      <div class="brand-logo-text">PINNACLE<span>BAY</span></div>
+    </div>
+    
+    <div class="user-profile-widget">
+      <div class="user-badge">
+        <span id="userNameHeader" class="user-name">Loading...</span>
+        <span id="userRoleHeader" class="user-role">Guest</span>
+      </div>
+      <button class="btn-logout" onclick="handleLogout()">
+        <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24">
+          <path d="M14.08 15.59L16.67 13H7v-2h9.67l-2.59-2.59L15.5 7l5 5-5 5-1.42-1.41zM20 3h-8c-1.11 0-2 .89-2 2v4h2V5h8v14h-8v-4h-2v4c0 1.1.89 2 2 2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+        </svg>
+        Sign Out
+      </button>
+    </div>
+  </header>
+
+  <!-- Dashboard Container -->
+  <main class="dashboard-container">
+    
+    <!-- Left: Core Workspace -->
+    <section class="main-panel">
+      <div class="welcome-section">
+        <h1>Welcome back, <span id="welcomeName">User</span></h1>
+        <p>You have successfully authenticated via JWT. The server has mapped your account token to the following active role authority in Pinnacle Bay.</p>
+      </div>
+
+      <!-- Action Panel customized for Role -->
+      <div id="roleActionBox" class="role-action-box">
+        <div id="roleActionTitle" class="role-action-title">
+          <!-- Icon is dynamic -->
+          <span id="roleTitleText">Validating Role Privileges...</span>
+        </div>
+        <div id="roleActionDesc" class="role-action-desc">
+          Fetching authorized module endpoints for your scope...
+        </div>
+        <div class="next-phase-info">
+          <svg style="width:14px;height:14px;fill:currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+          </svg>
+          <span>Pinnacle Bay Live System: Phase 1 (Auth Verification System) Active.</span>
+        </div>
+      </div>
+      
+      <div style="color: var(--text-gray); font-size: 0.9rem; line-height: 1.6;">
+        <p>This layout operates as a <strong>Unified Shell Canvas</strong>. When the remaining phases (Admin, Receptionist, Operations, Finance) are implemented, this content area will swap in your role-specific dashboard panels, database grids, schedules, and analytics modules.</p>
+      </div>
+    </section>
+
+    <!-- Right: Session details -->
+    <section class="metadata-panel">
+      
+      <!-- User Token Details -->
+      <div class="card">
+        <h3 class="card-title">Token Credentials</h3>
+        
+        <div class="meta-item">
+          <div class="meta-label">Full Name</div>
+          <div id="metaName" class="meta-value">---</div>
+        </div>
+
+        <div class="meta-item">
+          <div class="meta-label">Assigned Authority</div>
+          <div><span id="metaRole" class="meta-value role-tag">---</span></div>
+        </div>
+
+        <div class="meta-item">
+          <div class="meta-label">Registered Email</div>
+          <div id="metaEmail" class="meta-value">---</div>
+        </div>
+
+        <div class="meta-item">
+          <div class="meta-label">Token ID</div>
+          <div id="metaId" class="meta-value">---</div>
+        </div>
+      </div>
+
+      <!-- JSON Web Token Box -->
+      <div class="card">
+        <div class="collapsible-header" onclick="toggleTokenBox()">
+          <h3 class="card-title" style="margin-bottom:0; border-bottom:none; padding-bottom:0">Signed JWT Header</h3>
+          <svg id="arrowIcon" style="width:18px;height:18px;fill:var(--text-muted);transform:rotate(0deg);transition:transform 0.3s" viewBox="0 0 24 24">
+            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+          </svg>
+        </div>
+        <div id="tokenCollapsible" class="collapsible-content" style="margin-top: 1rem;">
+          <div id="jwtTokenDisplay" class="token-box">
+            Loading JWT Token string...
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    // Elements Selectors
+    const userNameHeader = document.getElementById('userNameHeader');
+    const userRoleHeader = document.getElementById('userRoleHeader');
+    const welcomeName = document.getElementById('welcomeName');
+    const roleTitleText = document.getElementById('roleTitleText');
+    const roleActionDesc = document.getElementById('roleActionDesc');
+    const metaName = document.getElementById('metaName');
+    const metaRole = document.getElementById('metaRole');
+    const metaEmail = document.getElementById('metaEmail');
+    const metaId = document.getElementById('metaId');
+    const jwtTokenDisplay = document.getElementById('jwtTokenDisplay');
+    const tokenCollapsible = document.getElementById('tokenCollapsible');
+    const arrowIcon = document.getElementById('arrowIcon');
+
+    // Run verification on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      const token = localStorage.getItem('token');
+      const userStr = localStorage.getItem('currentUser') || localStorage.getItem('user');
+
+      if (!token || !userStr) {
+        console.warn('[Session Security] No token found. Redirecting to login page.');
+        forceLogout();
+        return;
+      }
+
+      try {
+        // Contact the backend token verification endpoint
+        const response = await fetch('/api/auth/verify', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Token is verified and valid! Render dashboard contents
+          document.body.style.opacity = '1';
+          loadDashboardData(data.user, token);
+        } else {
+          console.warn('[Session Security] Invalid session credentials. Redirecting to login page:', data.message);
+          forceLogout();
+        }
+      } catch (err) {
+        console.error('[Network Error] Failed to contact authentication verification route:', err);
+        // During network issues, keep the user on the page for offline presentation support
+        document.body.style.opacity = '1';
+        const offlineUser = JSON.parse(userStr);
+        loadDashboardData(offlineUser, token);
+      }
+    });
+
+    // Populate user profile info to dashboard fields
+    function loadDashboardData(user, token) {
+      userNameHeader.textContent = user.name;
+      userRoleHeader.textContent = user.role;
+      welcomeName.textContent = user.name.split(' ')[0]; // Welcome by first name
+      
+      // Metadata tags
+      metaName.textContent = user.name;
+      metaRole.textContent = user.role;
+      metaEmail.textContent = user.email;
+      metaId.textContent = `UID-${user.id.toString().padStart(4, '0')}`;
+      jwtTokenDisplay.textContent = token;
+
+      // Role Action text changes dynamically based on the JWT payload
+      const roleDetails = {
+        admin: {
+          title: 'System Administrator Access Console',
+          desc: '✔ You have full access to User Registrations, Security Auditing logs, Staff provisioning configurations, database constraints settings, and SSMS Connection Pool controllers. In Phase 2, this section will host high-density staff grids and user governance forms.'
+        },
+        receptionist: {
+          title: 'Front-Desk & Booking Grid Dashboard',
+          desc: '✔ Access to the reservation calendar. You can schedule room types, search availability lists, and reserve suites for guests. In Phase 3, this canvas will render the dynamic timeline/occupancy grid.'
+        },
+        operations: {
+          title: 'Operations & Housekeeping Coordination Hub',
+          desc: '✔ Access to check-in/check-out processors. You can track cleaning lists, update repair registers, and record service charges (Spa, Laundry, Diner tabs). In Phase 4, this space will display Room status cards.'
+        },
+        finance: {
+          title: 'Finance & Invoicing Analytics Console',
+          desc: '✔ Access to invoicing sheets, billing aggregates, payment databases, and refund ledger files. In Phase 5, this space will load Google Charts reporting occupancy percentages and annual revenue metrics.'
+        }
+      };
+
+      const layout = roleDetails[user.role.toLowerCase()] || {
+        title: 'Authorized Staff Workspace',
+        desc: '✔ Access to general Pinnacle Bay hospitality tools. Specific action modules are currently pending registration.'
+      };
+
+      roleTitleText.textContent = layout.title;
+      roleActionDesc.textContent = layout.desc;
+    }
+
+    // Toggle JSON Web Token display card
+    let tokenCollapsed = true;
+    function toggleTokenBox() {
+      if (tokenCollapsed) {
+        tokenCollapsible.style.maxHeight = '200px';
+        arrowIcon.style.transform = 'rotate(180deg)';
+      } else {
+        tokenCollapsible.style.maxHeight = '0px';
+        arrowIcon.style.transform = 'rotate(0deg)';
+      }
+      tokenCollapsed = !tokenCollapsed;
+    }
+
+    // Sign out event handler
+    function handleLogout() {
+      if(confirm('Are you sure you want to sign out of Pinnacle Bay?')) {
+        forceLogout();
+      }
+    }
+
+    function forceLogout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = '/';
+    }
+  </script>
+</body>
+</html>

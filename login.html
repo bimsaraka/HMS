@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pinnacle Bay 96 Resort & Hotel Management System - Staff & Department Access Portal.">
+  <title>Pinnacle Bay 96 | Staff Authentication Portal</title>
+  
+  <!-- Premium Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Global Admin Oversight Injection Script -->
+  <script src="/js/admin-oversight.js"></script>
+
+  <style>
+    :root {
+      --primary-dark: #070a13;
+      --secondary-dark: #0f172a;
+      --card-bg: rgba(15, 23, 42, 0.85);
+      --accent-gold: #c5a880;
+      --accent-gold-hover: #b3946c;
+      --accent-gold-rgb: 197, 168, 128;
+      --text-white: #f8fafc;
+      --text-gray: #94a3b8;
+      --text-muted: #64748b;
+      --border-color: rgba(197, 168, 128, 0.2);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --error-color: #ef4444;
+      --success-color: #10b981;
+      --font-outfit: 'Outfit', sans-serif;
+      --font-inter: 'Inter', sans-serif;
+      --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-inter);
+      background-color: var(--primary-dark);
+      color: var(--text-white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow-x: hidden;
+      background: radial-gradient(circle at top center, rgba(197, 168, 128, 0.08) 0%, rgba(7, 10, 19, 0.95) 70%),
+                  url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2000&q=80') no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 460px;
+      z-index: 10;
+    }
+
+    .brand-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .brand-logo-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-white);
+      margin-bottom: 0.75rem;
+    }
+
+    .brand-logo-svg {
+      width: 38px;
+      height: 38px;
+      fill: var(--accent-gold);
+      filter: drop-shadow(0 0 10px rgba(var(--accent-gold-rgb), 0.5));
+    }
+
+    .brand-logo-text {
+      font-family: var(--font-outfit);
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .brand-logo-text span {
+      color: var(--accent-gold);
+    }
+
+    .brand-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-gray);
+      letter-spacing: 0.5px;
+    }
+
+    .login-card {
+      background: rgba(9, 13, 22, 0.9);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--accent-gold);
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(197, 168, 128, 0.15);
+    }
+
+    .card-title {
+      font-family: var(--font-outfit);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 0.35rem;
+      text-align: center;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-gray);
+      margin-bottom: 1.75rem;
+      text-align: center;
+    }
+
+    /* Alert Box */
+    .alert-container {
+      display: none;
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+      color: var(--error-color);
+      font-size: 0.85rem;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.35rem;
+    }
+
+    .form-label {
+      display: block;
+      font-family: var(--font-outfit);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-gold);
+      margin-bottom: 0.45rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      width: 18px;
+      height: 18px;
+      fill: var(--text-muted);
+      pointer-events: none;
+      transition: var(--transition-smooth);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.75rem;
+      background-color: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 8px;
+      color: var(--text-white);
+      font-family: var(--font-inter);
+      font-size: 0.9rem;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .form-input:focus {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 2px rgba(var(--accent-gold-rgb), 0.2);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 0.85rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+    }
+
+    .password-toggle:hover {
+      color: var(--accent-gold);
+    }
+
+    .password-toggle svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.95rem;
+      background: linear-gradient(135deg, #c5a880 0%, #d4af37 100%);
+      border: none;
+      border-radius: 8px;
+      color: var(--primary-dark);
+      font-family: var(--font-outfit);
+      font-size: 0.95rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-submit:hover {
+      background: linear-gradient(135deg, #d4af37 0%, #f3d489 100%);
+      box-shadow: 0 4px 20px rgba(var(--accent-gold-rgb), 0.5);
+      transform: translateY(-2px);
+    }
+
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(9, 13, 22, 0.25);
+      border-radius: 50%;
+      border-top-color: var(--primary-dark);
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Quick Role Links */
+    .quick-roles-box {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .quick-roles-title {
+      font-family: var(--font-outfit);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-gray);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 0.85rem;
+      text-align: center;
+    }
+
+    .quick-roles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.6rem;
+    }
+
+    .quick-role-link {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 6px;
+      padding: 0.65rem 0.5rem;
+      color: var(--text-gray);
+      font-size: 0.8rem;
+      text-decoration: none;
+      text-align: center;
+      font-weight: 600;
+      transition: var(--transition-smooth);
+    }
+
+    .quick-role-link:hover {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+      background: rgba(197, 168, 128, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .back-home-wrap {
+      text-align: center;
+      margin-top: 1.75rem;
+    }
+
+    .back-home-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-gray);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: var(--transition-smooth);
+    }
+
+    .back-home-link:hover {
+      color: var(--accent-gold);
+    }
+
+    .back-home-link svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="brand-header">
+      <a href="index.html" class="brand-logo-link">
+        <svg class="brand-logo-svg" viewBox="0 0 24 24">
+          <path d="M12 2L2 22h20L12 2zm0 3.99L18.47 18H5.53L12 5.99zM11 10h2v4h-2zm0 5h2v2h-2z"/>
+        </svg>
+        <div class="brand-logo-text">PINNACLE BAY <span>96</span></div>
+      </a>
+      <p class="brand-subtitle">Staff & Department Management Console</p>
+    </div>
+
+    <div class="login-card">
+      <h2 class="card-title">Staff Portal Sign In</h2>
+      <p class="card-desc">Enter your system credentials to access department hubs</p>
+
+      <div id="alertBox" class="alert-container">
+        <svg style="width:18px;height:18px;fill:currentColor;flex-shrink:0" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <span id="alertMessage">Invalid email or password</span>
+      </div>
+
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <!-- Email Input -->
+        <div class="form-group">
+          <label class="form-label" for="username">Username or Email</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            <input 
+              type="email" 
+              id="username" 
+              name="username" 
+              class="form-input" 
+              placeholder="you@pinnaclebay.com" 
+              required
+              autocomplete="email"
+            >
+          </div>
+        </div>
+
+        <!-- Password Input -->
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24">
+              <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+            </svg>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="form-input" 
+              placeholder="••••••••••••" 
+              required
+              autocomplete="current-password"
+            >
+            <button type="button" id="passwordToggle" class="password-toggle" onclick="togglePass()" aria-label="Toggle Password">
+              <svg id="eyeIconOpen" viewBox="0 0 24 24">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+              </svg>
+              <svg id="eyeIconClose" viewBox="0 0 24 24" style="display: none;">
+                <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.82l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.74-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.17c0-1.66-1.34-3-3-3l-.17.02z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit" id="btnSubmit">
+          <span id="btnText">Sign In to Dashboard</span>
+          <div id="btnSpinner" class="spinner"></div>
+        </button>
+      </form>
+
+      <!-- Quick Role Links -->
+      <div class="quick-roles-box">
+        <div class="quick-roles-title">Direct Department Hubs</div>
+        <div class="quick-roles-grid">
+          <a href="admin-dashboard.html" class="quick-role-link">Admin Hub</a>
+          <a href="reception-dashboard.html" class="quick-role-link">Reception Desk</a>
+          <a href="ops-dashboard.html" class="quick-role-link">Operations / Ops</a>
+          <a href="finance-dashboard.html" class="quick-role-link">Finance & Billing</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="back-home-wrap">
+      <a href="index.html" class="back-home-link">
+        <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        Return to Public Landing Page
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const alertBox = document.getElementById('alertBox');
+    const alertMessage = document.getElementById('alertMessage');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+
+    function togglePass() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      document.getElementById('eyeIconOpen').style.display = type === 'password' ? 'block' : 'none';
+      document.getElementById('eyeIconClose').style.display = type === 'password' ? 'none' : 'block';
+    }
+
+    function showAlert(msg) {
+      if (alertMessage) alertMessage.textContent = msg;
+      if (alertBox) alertBox.style.display = 'flex';
+    }
+
+    function hideAlert() {
+      if (alertBox) alertBox.style.display = 'none';
+    }
+
+    if (usernameInput) usernameInput.addEventListener('input', hideAlert);
+    if (passwordInput) passwordInput.addEventListener('input', hideAlert);
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      hideAlert();
+
+      const emailVal = usernameInput.value.trim().toLowerCase();
+      const passVal = passwordInput.value;
+
+      if (!emailVal || !passVal) {
+        showAlert('Please enter both username/email and password.');
+        return;
+      }
+
+      setLoading(true);
+
+      const API_BASE = window.location.origin.includes('localhost:3000') ? '' : 'http://localhost:3000';
+
+      try {
+        const response = await fetch(`${API_BASE}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailVal, password: passVal })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Invalid email or password');
+        }
+
+        setLoading(false);
+
+        const userObj = data.user || {};
+        const role = data.role || userObj.role || 'Administrator';
+        const redirectUrl = data.redirectUrl || userObj.redirectUrl || 'admin-dashboard.html';
+
+        const authUser = {
+          email: emailVal,
+          username: emailVal,
+          name: userObj.name || emailVal,
+          role: role
+        };
+        localStorage.setItem('user', JSON.stringify(authUser));
+        localStorage.setItem('currentUser', JSON.stringify(authUser));
+        localStorage.setItem('token', data.token || ('mock-jwt-token-' + role.toLowerCase()));
+        
+        window.location.href = redirectUrl;
+      } catch (err) {
+        setLoading(false);
+        showAlert(err.message || 'Authentication failed.');
+      }
+    }
+
+    function setLoading(isLoading) {
+      if (isLoading) {
+        if (btnText) btnText.style.display = 'none';
+        if (btnSpinner) btnSpinner.style.display = 'block';
+        if (btnSubmit) btnSubmit.disabled = true;
+      } else {
+        if (btnText) btnText.style.display = 'block';
+        if (btnSpinner) btnSpinner.style.display = 'none';
+        if (btnSubmit) btnSubmit.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

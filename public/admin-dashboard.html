@@ -1,0 +1,4145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pinnacle Bay Resort & Hotel Management System - User Governance Panel.">
+  <title>Pinnacle Bay - User Governance</title>
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Global Admin Return & Oversight Injection Script -->
+  <script src="/js/admin-oversight.js"></script>
+  <script>
+    // Early global declaration of switchAdminTab & loadAdminDiningOversight
+    window.loadAdminDiningOversight = function() {
+      if (window.AdminKitchenSystem && typeof window.AdminKitchenSystem.loadAll === 'function') {
+        window.AdminKitchenSystem.loadAll();
+      }
+    };
+    window.switchAdminTab = function(tabName) {
+      try {
+        const allPanels = document.querySelectorAll('.tab-content, .module-view, .tab-view, #staff-governance-view, #kitchen-dining-view, #reports-view, #viewGovernance, #viewAttendance, #viewReports, #viewKitchenDining');
+        allPanels.forEach(p => p.style.display = 'none');
+
+        const navButtons = document.querySelectorAll('.nav-btn, .sidebar button, .sidebar-nav-item, [onclick*="switchAdminTab"]');
+        navButtons.forEach(btn => {
+          btn.classList.remove('active');
+          btn.style.background = 'transparent';
+          btn.style.color = '#94a3b8';
+        });
+
+        const targetPanel = document.getElementById(tabName + '-view') || 
+                            document.getElementById(tabName) ||
+                            document.getElementById('view' + tabName.charAt(0).toUpperCase() + tabName.slice(1)) ||
+                            document.getElementById(tabName === 'governance' ? 'viewGovernance' : tabName === 'attendance' ? 'viewAttendance' : tabName === 'reports' ? 'viewReports' : (tabName === 'kitchen' || tabName === 'kitchen-dining') ? 'viewKitchenDining' : null);
+        if (targetPanel) {
+          targetPanel.style.display = (tabName === 'kitchen-dining' || tabName === 'kitchen' || targetPanel.id === 'viewKitchenDining' || tabName === 'attendance' || targetPanel.id === 'viewAttendance') ? 'flex' : 'block';
+        }
+
+        if (typeof event !== 'undefined' && event && event.currentTarget) {
+          event.currentTarget.classList.add('active');
+          event.currentTarget.style.background = '#1e293b';
+          event.currentTarget.style.color = '#ffffff';
+        } else {
+          const matchedBtn = document.getElementById(tabName === 'governance' ? 'tabGovernanceBtn' : tabName === 'attendance' ? 'tabAttendanceBtn' : tabName === 'reports' ? 'tabReportsBtn' : (tabName === 'kitchen' || tabName === 'kitchen-dining') ? 'navKitchenDining' : null);
+          if (matchedBtn) {
+            matchedBtn.classList.add('active');
+            matchedBtn.style.background = '#1e293b';
+            matchedBtn.style.color = '#ffffff';
+          }
+        }
+
+        if ((tabName === 'kitchen-dining' || tabName === 'kitchen') && typeof window.loadAdminDiningOversight === 'function') {
+          window.loadAdminDiningOversight();
+        }
+      } catch (err) {
+        console.error('Error switching admin tabs:', err);
+      }
+    };
+    var switchAdminTab = window.switchAdminTab;
+  </script>
+  
+  <style>
+    /* Styling tokens */
+    :root {
+      --primary-dark: #090d16;
+      --secondary-dark: #111827;
+      --accent-gold: #c5a880;
+      --accent-gold-hover: #b3946c;
+      --accent-gold-rgb: 197, 168, 128;
+      --text-white: #f8fafc;
+      --text-gray: #94a3b8;
+      --text-muted: #4b5563;
+      --border-color: #1f2937;
+      
+      /* Badges */
+      --active-bg: rgba(16, 185, 129, 0.12);
+      --active-text: #10b981;
+      --suspended-bg: rgba(239, 68, 68, 0.12);
+      --suspended-text: #ef4444;
+      --inactive-bg: rgba(156, 163, 175, 0.12);
+      --inactive-text: #9ca3af;
+      
+      --font-outfit: 'Outfit', sans-serif;
+      --font-inter: 'Inter', sans-serif;
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-inter);
+      background-color: var(--primary-dark);
+      color: var(--text-white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar styling */
+    .navbar {
+      background-color: var(--secondary-dark);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo svg {
+      width: 32px;
+      height: 32px;
+      fill: var(--accent-gold);
+      filter: drop-shadow(0 0 4px rgba(var(--accent-gold-rgb), 0.2));
+    }
+
+    .brand-logo-text {
+      font-family: var(--font-outfit);
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+    }
+
+    .brand-logo-text span {
+      color: var(--accent-gold);
+    }
+
+    .user-profile-widget {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .user-badge {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-white);
+    }
+
+    .user-role {
+      font-size: 0.75rem;
+      color: var(--accent-gold);
+      font-family: var(--font-outfit);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .btn-logout {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-gray);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-logout:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+      background-color: rgba(239, 68, 68, 0.05);
+    }
+
+    /* Container layout */
+    .dashboard-container {
+      flex: 1;
+      min-width: 0;
+      padding: 2.25rem 2.5rem;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      box-sizing: border-box;
+      max-width: 1600px;
+    }
+
+    /* Hero section */
+    .dashboard-hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .hero-text h1 {
+      font-family: var(--font-outfit);
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-text p {
+      color: var(--text-gray);
+      font-size: 0.95rem;
+      font-weight: 300;
+    }
+
+    /* Action buttons */
+    .btn-primary {
+      background-color: var(--accent-gold);
+      color: var(--primary-dark);
+      border: none;
+      border-radius: 8px;
+      padding: 0.85rem 1.5rem;
+      font-family: var(--font-outfit);
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-gold-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(var(--accent-gold-rgb), 0.25);
+    }
+
+    .btn-primary svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* KPI Summary Cards Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .kpi-card {
+      background-color: var(--secondary-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-icon-container {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      background-color: rgba(var(--accent-gold-rgb), 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-gold);
+    }
+
+    .kpi-icon-container svg {
+      width: 28px;
+      height: 28px;
+      fill: currentColor;
+    }
+
+    .kpi-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .kpi-value {
+      font-size: 2.25rem;
+      font-family: var(--font-outfit);
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .kpi-label {
+      color: var(--text-gray);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    /* Search and Filters Controls */
+    .controls-card {
+      background-color: var(--secondary-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-wrapper {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      width: 18px;
+      height: 18px;
+      fill: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      background-color: var(--primary-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-white);
+      font-family: var(--font-inter);
+      font-size: 0.9rem;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-gold);
+    }
+
+    .filter-select {
+      padding: 0.75rem 2rem 0.75rem 1rem;
+      background-color: var(--primary-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-white);
+      font-family: var(--font-inter);
+      font-size: 0.9rem;
+      outline: none;
+      cursor: pointer;
+      min-width: 180px;
+      transition: var(--transition-smooth);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1.25rem;
+    }
+
+    .filter-select:focus {
+      border-color: var(--accent-gold);
+    }
+
+    /* User Management Data Table */
+    .table-card {
+      background-color: var(--secondary-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    .data-table th {
+      background-color: rgba(31, 41, 55, 0.4);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1.1rem 1.5rem;
+      color: var(--text-gray);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .data-table td {
+      padding: 1.15rem 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-white);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr {
+      transition: var(--transition-smooth);
+    }
+
+    .data-table tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.01);
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-active {
+      background-color: var(--active-bg);
+      color: var(--active-text);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .badge-suspended {
+      background-color: var(--suspended-bg);
+      color: var(--suspended-text);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    .badge-inactive {
+      background-color: var(--inactive-bg);
+      color: var(--inactive-text);
+      border: 1px solid rgba(156, 163, 175, 0.25);
+    }
+
+    .badge-present {
+      background-color: var(--active-bg);
+      color: var(--active-text);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .badge-absent {
+      background-color: var(--suspended-bg);
+      color: var(--suspended-text);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    .badge-half-day, .badge-halfday {
+      background-color: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .badge-leave {
+      background-color: rgba(168, 85, 247, 0.12);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.25);
+    }
+
+    /* Layout Shell */
+    .app-layout {
+      display: flex;
+      min-height: calc(100vh - 73px);
+      width: 100%;
+      position: relative;
+    }
+
+    /* Left Sidebar Navigation */
+    .admin-sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background-color: var(--secondary-dark);
+      border-right: 1px solid var(--border-color);
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      position: sticky;
+      top: 73px;
+      height: calc(100vh - 73px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-color) transparent;
+      box-sizing: border-box;
+      z-index: 90;
+    }
+
+    .admin-sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .admin-sidebar::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    .sidebar-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .sidebar-section-title {
+      font-family: var(--font-outfit);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      padding: 0 0.75rem 0.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.75rem 0.9rem;
+      border-radius: 8px;
+      font-family: var(--font-outfit);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-gray);
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: transparent;
+      transition: var(--transition-smooth);
+      width: 100%;
+      text-align: left;
+      box-sizing: border-box;
+    }
+
+    .sidebar-nav-item svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      flex-shrink: 0;
+      transition: var(--transition-smooth);
+    }
+
+    .sidebar-nav-item:hover {
+      color: var(--text-white);
+      background-color: rgba(255, 255, 255, 0.04);
+      transform: translateX(3px);
+    }
+
+    .sidebar-nav-item.active {
+      background-color: rgba(var(--accent-gold-rgb), 0.1);
+      color: var(--accent-gold);
+      border-color: rgba(var(--accent-gold-rgb), 0.3);
+      box-shadow: inset 3px 0 0 var(--accent-gold), 0 2px 8px rgba(0, 0, 0, 0.25);
+      font-weight: 700;
+    }
+
+    .sidebar-nav-item.active svg {
+      filter: drop-shadow(0 0 6px rgba(var(--accent-gold-rgb), 0.5));
+    }
+
+    .sidebar-nav-badge {
+      margin-left: auto;
+      font-size: 0.68rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-gray);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-nav-item.active .sidebar-nav-badge {
+      background: rgba(var(--accent-gold-rgb), 0.2);
+      color: var(--accent-gold);
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--border-color);
+      margin: 0.25rem 0.5rem;
+    }
+
+    .sidebar-footer-card {
+      margin-top: auto;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .sidebar-footer-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      font-family: var(--font-outfit);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .sidebar-footer-desc {
+      font-size: 0.7rem;
+      color: var(--text-gray);
+      line-height: 1.4;
+    }
+
+    @media (max-width: 960px) {
+      .app-layout {
+        flex-direction: column;
+      }
+      .admin-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        padding: 1rem;
+      }
+      .dashboard-container {
+        padding: 1.5rem 1rem !important;
+      }
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background-color: var(--secondary-dark);
+      border: 1px solid var(--accent-gold);
+      border-left: 4px solid var(--accent-gold);
+      color: var(--text-white);
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .toast.active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-icon {
+      color: var(--accent-gold);
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .tab-view {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .role-badge {
+      font-weight: 500;
+      color: var(--text-white);
+      background-color: var(--primary-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.8rem;
+      text-transform: capitalize;
+    }
+
+    /* Action Buttons */
+    .actions-cell {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-icon {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-gray);
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-icon:hover {
+      background-color: var(--primary-dark);
+      color: var(--text-white);
+      border-color: var(--accent-gold);
+    }
+
+    .btn-icon.btn-delete:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+      background-color: rgba(239, 68, 68, 0.05);
+    }
+
+    .btn-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* Modal / Dialog native styling */
+    dialog {
+      background-color: var(--secondary-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 480px;
+      margin: auto;
+      padding: 0;
+      color: var(--text-white);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      outline: none;
+      overflow: hidden;
+    }
+
+    dialog::backdrop {
+      background-color: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(4px);
+    }
+
+    /* Animation when dialog is open */
+    dialog[open] {
+      animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-family: var(--font-outfit);
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .btn-close {
+      background: none;
+      border: none;
+      color: var(--text-gray);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-close:hover {
+      color: var(--text-white);
+    }
+
+    .btn-close svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+    }
+
+    .modal-footer {
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-white);
+      border-radius: 8px;
+      padding: 0.75rem 1.25rem;
+      font-family: var(--font-outfit);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--primary-dark);
+      border-color: var(--text-gray);
+    }
+
+    /* Dialog Form inputs */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-gray);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background-color: var(--primary-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-white);
+      font-family: var(--font-inter);
+      font-size: 0.95rem;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .form-select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1.25rem;
+    }
+
+    .form-input:focus, .form-select:focus {
+      border-color: var(--accent-gold);
+    }
+
+    .empty-state {
+      padding: 4rem 2rem;
+      text-align: center;
+      color: var(--text-gray);
+    }
+
+    .empty-state svg {
+      width: 48px;
+      height: 48px;
+      fill: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    /* Print Styles for System Reports */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .navbar, .admin-sidebar, #admin-sidebar, .btn-logout, #dbStatusBadge, .controls-card button, .btn-primary, .btn-secondary, dialog, .toast {
+        display: none !important;
+      }
+      .dashboard-container {
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+      .tab-view {
+        display: none !important;
+      }
+      #viewReports {
+        display: block !important;
+      }
+      .kpi-card, .table-card, .controls-card, section {
+        background: #ffffff !important;
+        border: 1px solid #cccccc !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+      }
+      .kpi-value, .hero-text h1, .data-table th, .data-table td {
+        color: #000000 !important;
+      }
+      .data-table th {
+        background: #f1f5f9 !important;
+      }
+      .badge, .role-badge {
+        border: 1px solid #000000 !important;
+        color: #000000 !important;
+        background: #f8fafc !important;
+      }
+    }
+
+    /* Kitchen & Dining Oversight Module Styles */
+    .dining-dual-panel-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.2fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 1200px) {
+      .dining-dual-panel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .menu-price-input {
+      background: #0f172a;
+      color: #38bdf8;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      width: 78px;
+      text-align: right;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    .menu-price-input:focus {
+      border-color: #38bdf8;
+      background: #091322;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+      outline: none;
+    }
+
+    .dining-toggle {
+      position: relative;
+      display: inline-block;
+      width: 38px;
+      height: 20px;
+      margin: 0;
+      cursor: pointer;
+    }
+    .dining-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+    .dining-toggle-slider {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #475569;
+      transition: .3s;
+      border-radius: 20px;
+    }
+    .dining-toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    .dining-toggle input:checked + .dining-toggle-slider {
+      background-color: #10b981;
+    }
+    .dining-toggle input:checked + .dining-toggle-slider:before {
+      transform: translateX(18px);
+    }
+
+    .btn-order-action {
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-order-prep {
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+      color: #fff;
+    }
+    .btn-order-prep:hover {
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+      transform: translateY(-1px);
+    }
+    .btn-order-deliver {
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #fff;
+    }
+    .btn-order-deliver:hover {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      transform: translateY(-1px);
+    }
+    .btn-order-folio {
+      background: linear-gradient(135deg, #c5a059, #eab308);
+      color: #0f172a;
+    }
+    .btn-order-folio:hover {
+      background: linear-gradient(135deg, #d4af37, #fde047);
+      transform: translateY(-1px);
+    }
+    .btn-order-cancel {
+      background: transparent;
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    .btn-order-cancel:hover {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: #ef4444;
+    }
+
+    /* Animations */
+    @keyframes scaleUp {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="navbar">
+    <div style="display: flex; align-items: center; gap: 1.5rem;">
+      <a href="index.html" class="brand-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L2 22h20L12 2zm0 3.99L18.47 18H5.53L12 5.99zM11 10h2v4h-2zm0 5h2v2h-2z"/>
+        </svg>
+        <div class="brand-logo-text">PINNACLE<span>BAY</span></div>
+      </a>
+      
+      <!-- Dynamic DB Status Badge -->
+      <div id="dbStatusBadge" class="db-status-badge" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: #ef4444; padding: 0.4rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px; font-family: var(--font-outfit); transition: all 0.3s ease;">
+        <span id="dbStatusDot" style="width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%; box-shadow: 0 0 8px #ef4444; transition: all 0.3s ease;"></span>
+        <span id="dbStatusText">Checking DB Connection...</span>
+      </div>
+    </div>
+    
+    <div class="user-profile-widget">
+      <div class="user-badge">
+        <span id="userNameHeader" class="user-name">Bimsara</span>
+        <span class="user-role">Administrator</span>
+      </div>
+      <!-- Explicit Logout link to index.html -->
+      <a href="index.html" class="btn-logout" id="btnLogout" onclick="handleLogout(event)">
+        <svg style="width:16px;height:16px;fill:currentColor" viewBox="0 0 24 24">
+          <path d="M14.08 15.59L16.67 13H7v-2h9.67l-2.59-2.59L15.5 7l5 5-5 5-5 5-1.42-1.41zM20 3h-8c-1.11 0-2 .89-2 2v4h2V5h8v14h-8v-4h-2v4c0 1.1.89 2 2 2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
+        </svg>
+        Logout
+      </a>
+    </div>
+  </header>
+
+  <!-- App Layout with Left Sidebar -->
+  <div class="app-layout">
+
+    <!-- Left Navigation Sidebar -->
+    <aside id="admin-sidebar" class="admin-sidebar" aria-label="Admin Navigation">
+      
+      <!-- Section 1: Administration Views -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">
+          <span>Administration</span>
+        </div>
+        <button class="sidebar-nav-item active" id="tabGovernanceBtn" onclick="switchAdminTab('governance')">
+          <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          <span>Staff Governance</span>
+        </button>
+        <button class="sidebar-nav-item" id="tabAttendanceBtn" onclick="switchAdminTab('attendance')">
+          <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+          <span>Staff Attendance</span>
+        </button>
+        <button class="sidebar-nav-item" id="tabReportsBtn" onclick="switchAdminTab('reports')">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+          <span>System Reports</span>
+          <span class="sidebar-nav-badge">Audit</span>
+        </button>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <!-- Section 2: Department Oversight Switcher -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">
+          <span>Department Oversight</span>
+        </div>
+        <a href="reception-dashboard.html" class="sidebar-nav-item">
+          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+          <span>Front Desk / Bookings</span>
+          <span class="sidebar-nav-badge">Reception</span>
+        </a>
+        <a href="ops-dashboard.html" class="sidebar-nav-item">
+          <svg viewBox="0 0 24 24"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-3.5-3.5 1.41-1.41L10 14.17l5.59-5.59L17 10l-7 7z"/></svg>
+          <span>Housekeeping & Rooms</span>
+          <span class="sidebar-nav-badge">Ops</span>
+        </a>
+        <a href="finance-dashboard.html" class="sidebar-nav-item">
+          <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          <span>Finance & Accounts</span>
+          <span class="sidebar-nav-badge">Finance</span>
+        </a>
+        <button type="button" class="nav-btn" id="navKitchenDining" onclick="window.switchAdminTab('kitchen-dining')" style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 10px 14px; background: transparent; border: none; color: #94a3b8; border-radius: 8px; cursor: pointer; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;">
+          <span style="display: flex; align-items: center; gap: 10px;">
+            <span>🍳</span> Kitchen & Dining
+          </span>
+          <span style="background: #1e293b; color: #f59e0b; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 6px;">
+            Kitchen
+          </span>
+        </button>
+      </div>
+
+      <!-- Footer system status card -->
+      <div class="sidebar-footer-card">
+        <div class="sidebar-footer-title">
+          <svg style="width: 14px; height: 14px; fill: var(--accent-gold);" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          <span>Admin Oversight Mode</span>
+        </div>
+        <div class="sidebar-footer-desc">Executive access to manage staff accounts, attendance records, and cross-departmental operations.</div>
+      </div>
+
+    </aside>
+
+    <!-- Main Grid Layout -->
+    <main class="dashboard-container">
+    
+    <!-- Tab 1: User & System Governance View -->
+    <div id="viewGovernance" class="tab-view">
+      <!-- Hero / Head Section -->
+      <div class="dashboard-hero">
+        <div class="hero-text">
+          <h1>User & System Governance</h1>
+          <p>Manage hotel staff accounts, configure permissions, and monitor access credentials.</p>
+        </div>
+        <!-- Add New User trigger button -->
+        <button class="btn-primary" onclick="openModal()">
+          <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+          Add New User
+        </button>
+      </div>
+
+      <!-- Top Summary Cards -->
+      <section class="kpi-grid">
+        <!-- Total Users -->
+        <div class="kpi-card">
+          <div class="kpi-icon-container">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </div>
+          <div class="kpi-details">
+            <span id="kpiTotalUsers" class="kpi-value">24</span>
+            <span class="kpi-label">Total Users</span>
+          </div>
+        </div>
+        <!-- Active Staff -->
+        <div class="kpi-card">
+          <div class="kpi-icon-container">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </div>
+          <div class="kpi-details">
+            <span id="kpiActiveStaff" class="kpi-value">18</span>
+            <span class="kpi-label">Active Staff</span>
+          </div>
+        </div>
+        <!-- Roles Configured -->
+        <div class="kpi-card">
+          <div class="kpi-icon-container">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.25z"/></svg>
+          </div>
+          <div class="kpi-details">
+            <span id="kpiRolesConfigured" class="kpi-value">4</span>
+            <span class="kpi-label">Roles Configured</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Search/Filters controls bar -->
+      <section class="controls-card">
+        <div class="search-wrapper">
+          <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search by name, email or ID..." oninput="filterTable()">
+        </div>
+        
+        <select id="roleFilter" class="filter-select" onchange="filterTable()">
+          <option value="all">All Roles</option>
+          <option value="admin">Administrator</option>
+          <option value="receptionist">Receptionist</option>
+          <option value="operations">Operations/Housekeeping</option>
+          <option value="finance">Finance Officer</option>
+        </select>
+
+        <select id="statusFilter" class="filter-select" onchange="filterTable()">
+          <option value="all">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="suspended">Suspended</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </section>
+
+      <!-- User Management Table Section -->
+      <section class="table-card">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="userTableBody">
+              <!-- Dynamic Injection -->
+            </tbody>
+          </table>
+        </div>
+        <!-- Empty Search State -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          <p>No matching user records found. Try modifying your search filter.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tab 2: Staff Attendance & Shifts View -->
+    <div id="viewAttendance" class="tab-view" style="display: none;">
+      <!-- Hero / Head Section -->
+      <div class="dashboard-hero">
+        <div class="hero-text">
+          <h1>Staff Attendance & Shift Logs</h1>
+          <p>Record daily staff shifts, track extra/overtime hours, and monitor staff attendance logs.</p>
+        </div>
+        <button class="btn-primary" onclick="fetchAttendance()">
+          <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+          Refresh Logs
+        </button>
+      </div>
+
+      <!-- Attendance KPI Summary Grid -->
+      <section class="kpi-grid">
+        <!-- Present Staff -->
+        <div class="kpi-card">
+          <div class="kpi-icon-container">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </div>
+          <div class="kpi-details">
+            <span id="kpiPresentCount" class="kpi-value">0</span>
+            <span class="kpi-label">Present Today</span>
+          </div>
+        </div>
+        <!-- Total OT Hours -->
+        <div class="kpi-card">
+          <div class="kpi-icon-container">
+            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          </div>
+          <div class="kpi-details">
+            <span id="kpiTotalExtraHours" class="kpi-value">0.0 hrs</span>
+            <span class="kpi-label">Total Extra / OT Hours</span>
+          </div>
+        </div>
+        <!-- Total Logged Entries -->
+        <div class="kpi-card">
+          <div class="kpi-icon-container">
+            <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          </div>
+          <div class="kpi-details">
+            <span id="kpiTotalRecords" class="kpi-value">0</span>
+            <span class="kpi-label">Total Logged Entries</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Component A: "Mark Clock-In / Attendance" Form -->
+      <section style="background-color: var(--secondary-dark); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.75rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(var(--accent-gold-rgb), 0.1); color: var(--accent-gold); display: flex; align-items: center; justify-content: center;">
+              <svg style="width: 20px; height: 20px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+            </div>
+            <div>
+              <h2 style="font-family: var(--font-outfit); font-size: 1.2rem; font-weight: 700; color: var(--text-white);">Mark Clock-In / Attendance</h2>
+              <p style="font-size: 0.85rem; color: var(--text-gray);">Assign shift and clock in staff member for duty today. Clock-out and overtime are recorded upon shift departure.</p>
+            </div>
+          </div>
+        </div>
+
+        <form id="attendanceForm" onsubmit="handleRecordAttendance(event)">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; align-items: flex-end;">
+            
+            <!-- Staff Member Selection -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="attStaffSelect">Staff Member *</label>
+              <select id="attStaffSelect" class="form-select" required onchange="handleStaffSelectionChange()">
+                <option value="">-- Select Staff Member --</option>
+              </select>
+            </div>
+
+            <!-- Hidden Inputs for explicit staff ID & Name -->
+            <input type="hidden" id="attStaffId">
+            <input type="hidden" id="attStaffName">
+
+            <!-- Date Picker -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="attDate">Date *</label>
+              <input type="date" id="attDate" class="form-input" required>
+            </div>
+
+            <!-- Shift Selector -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="attShift">Assigned Shift *</label>
+              <select id="attShift" class="form-select" required>
+                <option value="Morning Shift (8:00 AM - 5:00 PM)">Morning Shift (8:00 AM - 5:00 PM)</option>
+                <option value="Evening Shift (2:00 PM - 11:00 PM)">Evening Shift (2:00 PM - 11:00 PM)</option>
+                <option value="Night Shift (10:00 PM - 7:00 AM)">Night Shift (10:00 PM - 7:00 AM)</option>
+              </select>
+            </div>
+
+            <!-- Attendance Status -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="attStatus">Attendance Status</label>
+              <select id="attStatus" class="form-select">
+                <option value="Present">Present</option>
+                <option value="Absent">Absent</option>
+                <option value="Half Day">Half Day</option>
+                <option value="Leave">Leave</option>
+              </select>
+            </div>
+
+            <!-- Clock-In Time -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="attClockInTime">Clock-In Time</label>
+              <input type="time" id="attClockInTime" class="form-input" style="font-size: 0.9rem;">
+            </div>
+
+            <!-- Clock-Out Time -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="attClockOutTime">Clock-Out Time</label>
+              <input type="time" id="attClockOutTime" class="form-input" style="font-size: 0.9rem;">
+            </div>
+
+            <!-- Overtime (OT) Hours -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" for="attExtraHours">OT Hours (0 - 12)</label>
+              <input type="number" id="attExtraHours" class="form-input" min="0" max="12" step="0.5" value="0" placeholder="0.0">
+            </div>
+
+            <!-- Save Attendance Button -->
+            <div>
+              <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; height: 46px;">
+                <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+                Save Attendance
+              </button>
+            </div>
+          </div>
+
+          <!-- User-friendly Inline Error Alert Container -->
+          <div id="attendanceFormAlert" style="display: none; margin-top: 1.25rem;"></div>
+        </form>
+      </section>
+
+      <!-- Component: "Monthly Staff Attendance Summary" Panel -->
+      <section style="background-color: var(--secondary-dark); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.75rem; display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Header -->
+        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 38px; height: 38px; border-radius: 8px; background: rgba(59, 130, 246, 0.12); color: #3b82f6; display: flex; align-items: center; justify-content: center;">
+              <svg style="width: 22px; height: 22px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+            </div>
+            <div>
+              <h2 style="font-family: var(--font-outfit); font-size: 1.25rem; font-weight: 700; color: var(--text-white); margin: 0;">Monthly Staff Attendance Summary</h2>
+              <p style="font-size: 0.85rem; color: var(--text-gray); margin: 0.2rem 0 0 0;">Inspect individual employee monthly work records, aggregated present days, and total overtime hours.</p>
+            </div>
+          </div>
+          <div id="monthlyStaffSelectedName" style="font-size: 0.88rem; font-weight: 600; color: var(--accent-gold); background: rgba(var(--accent-gold-rgb), 0.08); padding: 0.35rem 0.85rem; border-radius: 6px; border: 1px solid rgba(var(--accent-gold-rgb), 0.25);">
+            Select staff to view summary
+          </div>
+        </div>
+
+        <!-- Filter Row -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; align-items: flex-end; background: rgba(0,0,0,0.15); padding: 1.25rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
+          <!-- Staff Dropdown -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="monthlySummaryStaffSelect">Select Staff Member *</label>
+            <select id="monthlySummaryStaffSelect" class="form-select" style="cursor: pointer;">
+              <option value="">-- Select Staff Member --</option>
+            </select>
+          </div>
+
+          <!-- Month Picker -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="monthlySummaryMonth">Select Month *</label>
+            <input type="month" id="monthlySummaryMonth" class="form-input" style="cursor: pointer;">
+          </div>
+
+          <!-- Action Button: View Summary -->
+          <div>
+            <button type="button" id="btnViewMonthlySummary" class="btn-primary" style="width: 100%; justify-content: center; height: 46px;" onclick="loadMonthlyAttendanceSummary()">
+              <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+              View Summary
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary KPI Cards (4 metrics in a row) -->
+        <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+          <!-- Metric 1: Total Days Present -->
+          <div class="kpi-card" style="padding: 1.25rem; gap: 1.1rem; border-left: 4px solid #10b981;">
+            <div class="kpi-icon-container" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981; width: 48px; height: 48px;">
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+            <div class="kpi-details">
+              <span id="kpiMonthlyPresent" class="kpi-value" style="font-size: 1.85rem; color: #10b981;">0 Days</span>
+              <span class="kpi-label">Total Days Present</span>
+            </div>
+          </div>
+
+          <!-- Metric 2: Total OT Hours -->
+          <div class="kpi-card" style="padding: 1.25rem; gap: 1.1rem; border-left: 4px solid var(--accent-gold);">
+            <div class="kpi-icon-container" style="background-color: rgba(var(--accent-gold-rgb), 0.1); color: var(--accent-gold); width: 48px; height: 48px;">
+              <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            </div>
+            <div class="kpi-details">
+              <span id="kpiMonthlyOT" class="kpi-value" style="font-size: 1.85rem; color: var(--accent-gold);">0.0 hrs</span>
+              <span class="kpi-label">Total OT Hours</span>
+            </div>
+          </div>
+
+          <!-- Metric 3: Leaves / Days Off -->
+          <div class="kpi-card" style="padding: 1.25rem; gap: 1.1rem; border-left: 4px solid #c084fc;">
+            <div class="kpi-icon-container" style="background-color: rgba(168, 85, 247, 0.1); color: #c084fc; width: 48px; height: 48px;">
+              <svg viewBox="0 0 24 24"><path d="M14 6V4h-4v2h4zM4 8v11c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-3V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H6c-1.1 0-2 .9-2 2zm14 11H6V8h12v11z"/></svg>
+            </div>
+            <div class="kpi-details">
+              <span id="kpiMonthlyLeaves" class="kpi-value" style="font-size: 1.85rem; color: #c084fc;">0 Days</span>
+              <span class="kpi-label">Leaves / Days Off</span>
+            </div>
+          </div>
+
+          <!-- Metric 4: Half Days -->
+          <div class="kpi-card" style="padding: 1.25rem; gap: 1.1rem; border-left: 4px solid #f59e0b;">
+            <div class="kpi-icon-container" style="background-color: rgba(245, 158, 11, 0.1); color: #f59e0b; width: 48px; height: 48px;">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18V4c4.41 0 8 3.59 8 8s-3.59 8-8 8z"/></svg>
+            </div>
+            <div class="kpi-details">
+              <span id="kpiMonthlyHalfDays" class="kpi-value" style="font-size: 1.85rem; color: #f59e0b;">0 Days</span>
+              <span class="kpi-label">Half Days</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detailed Month Table (Collapsible) -->
+        <div style="background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden;">
+          <!-- Collapsible Header / Toolbar -->
+          <div style="padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border-color); cursor: pointer;" onclick="toggleMonthlyAttendanceTable()">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span style="font-weight: 700; color: var(--text-white); font-size: 1rem;">Detailed Month Breakdown</span>
+              <span id="monthlyAttendanceCountBadge" class="badge badge-active" style="font-size: 0.75rem; text-transform: none; letter-spacing: normal;">0 Days Logged</span>
+            </div>
+            <button type="button" id="btnToggleMonthlyTable" class="btn-secondary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem; height: 32px; display: inline-flex; align-items: center; gap: 6px;" onclick="event.stopPropagation(); toggleMonthlyAttendanceTable();">
+              <span id="monthlyTableToggleText">Hide Breakdown</span>
+              <svg id="monthlyTableToggleIcon" style="width: 14px; height: 14px; fill: currentColor; transition: transform 0.2s; transform: rotate(180deg);" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+            </button>
+          </div>
+
+          <!-- Collapsible Table Container -->
+          <div id="monthlyAttendanceTableWrapper" style="display: block;">
+            <div class="table-responsive" style="max-height: 420px; overflow-y: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Shift</th>
+                    <th>Clock In</th>
+                    <th>Clock Out</th>
+                    <th>Overtime (OT)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="monthlyAttendanceTableBody">
+                  <!-- Populated dynamically via loadMonthlyAttendanceSummary() -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State for Monthly Table -->
+            <div id="monthlyAttendanceEmpty" class="empty-state" style="display: none; padding: 2rem;">
+              <svg viewBox="0 0 24 24" style="width: 42px; height: 42px; margin-bottom: 0.5rem; fill: var(--text-muted);"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+              <p style="color: var(--text-gray); margin: 0;">No attendance records found for this employee in the selected month.</p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Component B: "Attendance Log" Search/Filters Toolbar -->
+      <section class="controls-card">
+        <div class="search-wrapper">
+          <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" id="attSearchInput" class="search-input" placeholder="Search staff name or ID..." oninput="filterAttendanceTable()">
+        </div>
+        
+        <input type="date" id="attFilterDate" class="filter-select" style="cursor: pointer;" onchange="filterAttendanceTable()" title="Filter by date">
+
+        <select id="attFilterStatus" class="filter-select" onchange="filterAttendanceTable()">
+          <option value="all">All Statuses</option>
+          <option value="present">Present / On Duty</option>
+          <option value="absent">Absent</option>
+          <option value="half day">Half Day</option>
+          <option value="leave">Leave</option>
+        </select>
+
+        <button class="btn-secondary" onclick="resetAttendanceFilters()" style="padding: 0.75rem 1.25rem;">
+          Reset Filters
+        </button>
+      </section>
+
+      <!-- Attendance Log Data Table -->
+      <section class="table-card">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Staff ID & Name</th>
+                <th>Assigned Shift</th>
+                <th>Clock In / Out</th>
+                <th>Status</th>
+                <th>Overtime (OT)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="attendanceTableBody">
+              <!-- Dynamic Injection -->
+            </tbody>
+          </table>
+        </div>
+        <!-- Empty State -->
+        <div id="attEmptyState" class="empty-state" style="display: none;">
+          <svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          <p>No attendance records found. Mark staff attendance above to populate the log.</p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tab 3: System Reports & Analytics View -->
+    <div id="viewReports" class="tab-view" style="display: none;">
+      <!-- Hero / Head Section -->
+      <div class="dashboard-hero">
+        <div class="hero-text">
+          <h1>System Reports & Cross-Department Analytics</h1>
+          <p>Centralized oversight reports for reservations, room operations, financial performance, and staff payroll.</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+          <button class="btn-primary" onclick="generateSystemReport()">
+            <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+            Refresh Analytics
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Controls Toolbar -->
+      <section class="controls-card">
+        <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--accent-gold); font-weight: 700; font-family: var(--font-outfit); font-size: 0.95rem; margin-right: 0.5rem;">
+          <svg style="width: 20px; height: 20px; fill: currentColor;" viewBox="0 0 24 24"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+          <span>Report Filters:</span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <label style="font-size: 0.8rem; color: var(--text-gray); font-weight: 600;">From:</label>
+          <input type="date" id="reportStartDate" class="filter-select" style="cursor: pointer; min-width: 150px;" title="Start Date">
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <label style="font-size: 0.8rem; color: var(--text-gray); font-weight: 600;">To:</label>
+          <input type="date" id="reportEndDate" class="filter-select" style="cursor: pointer; min-width: 150px;" title="End Date">
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <label style="font-size: 0.8rem; color: var(--text-gray); font-weight: 600;">Department:</label>
+          <select id="reportDeptFilter" class="filter-select" style="min-width: 210px;">
+            <option value="all">All Departments</option>
+            <option value="front_desk">Front Desk & Reservations</option>
+            <option value="housekeeping">Housekeeping & Operations</option>
+            <option value="finance">Finance & Payroll</option>
+          </select>
+        </div>
+
+        <button class="btn-primary" onclick="generateSystemReport()" style="padding: 0.75rem 1.25rem;">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          Generate / Filter Report
+        </button>
+
+        <button class="btn-secondary" onclick="printSystemReport()" style="padding: 0.75rem 1.25rem;">
+          <svg style="width: 18px; height: 18px; fill: currentColor; margin-right: 6px;" viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-4 11H9v-5h6v5zm4-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+          Export / Print
+        </button>
+
+        <button class="btn-secondary" onclick="resetReportFilters()" style="padding: 0.75rem 1rem;">
+          Reset
+        </button>
+      </section>
+
+      <!-- Dashboard Report Summary Cards (Top Row) -->
+      <section class="kpi-grid">
+        <!-- Card 1: Total Reservations & Revenue Summary -->
+        <div class="kpi-card" style="border-top: 3px solid #10b981;">
+          <div class="kpi-icon-container" style="background-color: rgba(16, 185, 129, 0.1); color: #10b981;">
+            <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          </div>
+          <div class="kpi-details" style="flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span id="reportKpiRevenue" class="kpi-value" style="color: #10b981;">Rs. 0.00</span>
+              <span class="badge badge-active" id="reportKpiResBadge">0 Bookings</span>
+            </div>
+            <span class="kpi-label">Total Revenue & Bookings</span>
+            <div id="reportKpiRevenueSub" style="font-size: 0.78rem; color: var(--text-gray); margin-top: 0.35rem;">0 Confirmed Bookings | Rs. 0 Pending</div>
+          </div>
+        </div>
+
+        <!-- Card 2: Room Occupancy & Housekeeping Turnaround -->
+        <div class="kpi-card" style="border-top: 3px solid #3b82f6;">
+          <div class="kpi-icon-container" style="background-color: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+            <svg viewBox="0 0 24 24"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+          </div>
+          <div class="kpi-details" style="flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span id="reportKpiOccupancy" class="kpi-value" style="color: #3b82f6;">0%</span>
+              <span class="badge" id="reportKpiRoomsBadge" style="background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.25);">0 Rooms</span>
+            </div>
+            <span class="kpi-label">Occupancy & Turnaround</span>
+            <div id="reportKpiOccupancySub" style="font-size: 0.78rem; color: var(--text-gray); margin-top: 0.35rem;">0 Clean | 0 Dirty / In-Progress</div>
+          </div>
+        </div>
+
+        <!-- Card 3: Staff Attendance & Total Overtime (OT) Hours -->
+        <div class="kpi-card" style="border-top: 3px solid var(--accent-gold);">
+          <div class="kpi-icon-container" style="background-color: rgba(var(--accent-gold-rgb), 0.1); color: var(--accent-gold);">
+            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          </div>
+          <div class="kpi-details" style="flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span id="reportKpiOT" class="kpi-value" style="color: var(--accent-gold);">0.0 hrs</span>
+              <span class="badge" id="reportKpiStaffBadge" style="background: rgba(var(--accent-gold-rgb), 0.12); color: var(--accent-gold); border: 1px solid rgba(var(--accent-gold-rgb), 0.25);">0 Active</span>
+            </div>
+            <span class="kpi-label">Attendance & Overtime</span>
+            <div id="reportKpiOTSub" style="font-size: 0.78rem; color: var(--text-gray); margin-top: 0.35rem;">0 Present Logged | 0 Total Staff</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Detailed Report Log Tables -->
+
+      <!-- Section 1: Reservation Logs -->
+      <section id="reportReservationsSection" class="table-card">
+        <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.01);">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <div style="width: 28px; height: 28px; border-radius: 6px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; display: flex; align-items: center; justify-content: center;">
+              <svg style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+            </div>
+            <h3 style="font-family: var(--font-outfit); font-size: 1.05rem; font-weight: 700; color: var(--text-white);">Front Desk & Reservation Logs</h3>
+          </div>
+          <span class="badge badge-active" id="reportResCountBadge">0 Records</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Guest Name</th>
+                <th>Room Assigned</th>
+                <th>Check-in Date</th>
+                <th>Check-out Date</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="reportReservationsTableBody">
+              <!-- Dynamic Injection -->
+            </tbody>
+          </table>
+        </div>
+        <div id="reportResEmptyState" class="empty-state" style="display: none; padding: 2.5rem 1rem;">
+          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+          <p>No reservation records found matching current date/department filter.</p>
+        </div>
+      </section>
+
+      <!-- Section 2: Service & Housekeeping Logs -->
+      <section id="reportHousekeepingSection" class="table-card">
+        <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.01);">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <div style="width: 28px; height: 28px; border-radius: 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; display: flex; align-items: center; justify-content: center;">
+              <svg style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-3.5-3.5 1.41-1.41L10 14.17l5.59-5.59L17 10l-7 7z"/></svg>
+            </div>
+            <h3 style="font-family: var(--font-outfit); font-size: 1.05rem; font-weight: 700; color: var(--text-white);">Housekeeping & Operations Service Logs</h3>
+          </div>
+          <span class="badge badge-active" id="reportOpsCountBadge">0 Rooms</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Room Number</th>
+                <th>Assigned Staff</th>
+                <th>Cleaning Status</th>
+                <th>Last Cleaned / Updated</th>
+              </tr>
+            </thead>
+            <tbody id="reportHousekeepingTableBody">
+              <!-- Dynamic Injection -->
+            </tbody>
+          </table>
+        </div>
+        <div id="reportOpsEmptyState" class="empty-state" style="display: none; padding: 2.5rem 1rem;">
+          <svg viewBox="0 0 24 24"><path d="M19.36 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-3.5-3.5 1.41-1.41L10 14.17l5.59-5.59L17 10l-7 7z"/></svg>
+          <p>No housekeeping records found matching current date/department filter.</p>
+        </div>
+      </section>
+
+      <!-- Section 3: Payroll & Overtime Logs -->
+      <section id="reportPayrollSection" class="table-card">
+        <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.01);">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <div style="width: 28px; height: 28px; border-radius: 6px; background: rgba(var(--accent-gold-rgb), 0.15); color: var(--accent-gold); display: flex; align-items: center; justify-content: center;">
+              <svg style="width: 16px; height: 16px; fill: currentColor;" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+            </div>
+            <h3 style="font-family: var(--font-outfit); font-size: 1.05rem; font-weight: 700; color: var(--text-white);">Staff Payroll & Overtime Audit Logs</h3>
+          </div>
+          <span class="badge badge-active" id="reportPayCountBadge">0 Staff</span>
+        </div>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Staff Name & ID</th>
+                <th>Designation</th>
+                <th>Days Present</th>
+                <th>Extra / OT Hours</th>
+                <th>BASE PAY (Rs. 5,000/DAY)</th>
+                <th>OT PAY (Rs. 1,500/HR)</th>
+                <th>Total Estimated Payout</th>
+              </tr>
+            </thead>
+            <tbody id="reportPayrollTableBody">
+              <!-- Dynamic Injection -->
+            </tbody>
+          </table>
+        </div>
+        <div id="reportPayEmptyState" class="empty-state" style="display: none; padding: 2.5rem 1rem;">
+          <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          <p>No payroll records found matching current date/department filter.</p>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Tab 4: Kitchen & Dining Oversight View -->
+    <div id="viewKitchenDining" class="tab-view" style="display: none; flex-direction: column; gap: 20px;">
+      
+      <!-- Top Title & Quick Sync Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+        <div>
+          <h2 style="color: #fff; margin: 0; font-size: 1.45rem; font-weight: 800; display: flex; align-items: center; gap: 10px; font-family: var(--font-outfit);">
+            <span>🍳</span> Kitchen &amp; Dining Analytics Oversight
+          </h2>
+          <p style="color: #94a3b8; margin: 4px 0 0; font-size: 0.85rem;">
+            Executive overview of today's culinary offerings, food revenues, dish volumes, and guest order fulfillment audit.
+          </p>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <span id="adminDiningSyncBadge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+            <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+            Live (30s sync)
+          </span>
+          <button type="button" onclick="window.AdminKitchenSystem.loadAll();" style="background: #1e293b; color: #fff; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.82rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease;">
+            🔄 Refresh Audit
+          </button>
+        </div>
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- 1. EXECUTIVE TOP STATS CARDS (4 CLEAN CARDS) -->
+      <!-- ========================================================= -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+        
+        <!-- Card 1: Total Dining Revenue -->
+        <div style="background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="color: #94a3b8; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                💰 TOTAL DINING REVENUE
+              </span>
+              <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 600;">Today</span>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 6px;">
+              <span style="color: #c5a059; font-size: 1.4rem; font-weight: 800;">Rs. </span>
+              <span id="adminKpiDailyDiningRevenue" style="color: #34d399; font-size: 1.9rem; font-weight: 800;">0.00</span>
+              <span style="color: #94a3b8; font-size: 0.82rem; font-weight: 500;">LKR</span>
+            </div>
+          </div>
+          <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #334155; font-size: 0.75rem; color: #94a3b8;">
+            💳 Billed to Folio: <strong id="adminKpiBilledCount" style="color: #c5a059;">0</strong>
+          </div>
+        </div>
+
+        <!-- Card 2: Total Dishes Dispatched -->
+        <div style="background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="color: #94a3b8; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                🍽️ TOTAL DISHES DISPATCHED
+              </span>
+              <span style="background: #0f172a; border: 1px solid #475569; color: #38bdf8; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">Volume</span>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 8px;">
+              <span id="adminKpiTotalDishesDispatched" style="color: #38bdf8; font-size: 1.9rem; font-weight: 800;">0</span>
+              <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">Plates / Items</span>
+            </div>
+          </div>
+          <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #334155; font-size: 0.75rem; color: #94a3b8;">
+            Total items ordered from room service
+          </div>
+        </div>
+
+        <!-- Card 3: Total Orders Placed -->
+        <div style="background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="color: #94a3b8; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                🛎️ TOTAL ORDERS PLACED
+              </span>
+              <span style="background: #0f172a; border: 1px solid #475569; color: #cbd5e1; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem;">Tickets</span>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 8px;">
+              <span id="adminKpiTotalOrdersCount" style="color: #f8fafc; font-size: 1.9rem; font-weight: 800;">0</span>
+              <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">Orders</span>
+            </div>
+          </div>
+          <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid #334155; font-size: 0.75rem; color: #94a3b8;">
+            In-room dining order logs for today
+          </div>
+        </div>
+
+        <!-- Card 4: Kitchen Status Summary -->
+        <div style="background: linear-gradient(145deg, #1e293b, #0f172a); border: 1px solid #334155; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="color: #94a3b8; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                🍳 KITCHEN STATUS SUMMARY
+              </span>
+              <span id="adminKpiActiveBadge" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); color: #fbbf24; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 600;">Queue</span>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 8px;">
+              <span id="adminKpiActiveOrdersCount" style="color: #fbbf24; font-size: 1.9rem; font-weight: 800;">0</span>
+              <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">Active in Kitchen</span>
+            </div>
+          </div>
+          <div style="display: flex; justify-content: space-between; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #334155; font-size: 0.74rem;">
+            <div style="color: #94a3b8;">⏳ <span id="adminKpiPendingCount" style="color: #fbbf24; font-weight: 700;">0</span> Pending</div>
+            <div style="color: #94a3b8;">🍳 <span id="adminKpiPreparingCount" style="color: #60a5fa; font-weight: 700;">0</span> Prep</div>
+            <div style="color: #94a3b8;">✅ <span id="adminKpiDeliveredCount" style="color: #34d399; font-weight: 700;">0</span> Done</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========================================================= -->
+      <!-- 2. TWO CLEAN READ-ONLY AUDIT PANELS -->
+      <!-- ========================================================= -->
+      <div class="dining-dual-panel-grid">
+
+        <!-- PANEL A (LEFT): TODAY'S ACTIVE MENU CATALOG -->
+        <div id="adminPanelMenuAvailability" style="background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #334155; padding-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <h3 style="color: #fff; margin: 0; font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 8px; font-family: var(--font-outfit);">
+                <span>📋</span> Today's Active Menu Catalog
+              </h3>
+              <p style="color: #94a3b8; margin: 2px 0 0; font-size: 0.78rem;">
+                Read-only catalog of culinary items grouped by meal sessions with current room service pricing.
+              </p>
+            </div>
+            <span id="adminMenuTotalDishesBadge" style="background: #0f172a; border: 1px solid #334155; color: #38bdf8; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 12px;">
+              0 Dishes
+            </span>
+          </div>
+
+          <!-- Grouped Meal Sessions Master List (Read-Only) -->
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            
+            <!-- Breakfast Session Group -->
+            <div style="background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.1rem;">🌅</span>
+                  <h4 style="color: #f8fafc; margin: 0; font-size: 0.95rem; font-weight: 700;">Breakfast Session</h4>
+                  <span style="color: #94a3b8; font-size: 0.72rem;">(06:30 AM - 10:30 AM)</span>
+                </div>
+              </div>
+              <div id="adminBreakfastList" style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Injected via AdminKitchenSystem.loadAll -->
+              </div>
+            </div>
+
+            <!-- Lunch Session Group -->
+            <div style="background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.1rem;">☀️</span>
+                  <h4 style="color: #f8fafc; margin: 0; font-size: 0.95rem; font-weight: 700;">Lunch Session</h4>
+                  <span style="color: #94a3b8; font-size: 0.72rem;">(12:30 PM - 03:30 PM)</span>
+                </div>
+              </div>
+              <div id="adminLunchList" style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Injected via AdminKitchenSystem.loadAll -->
+              </div>
+            </div>
+
+            <!-- Dinner Session Group -->
+            <div style="background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #1e293b; padding-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 1.1rem;">🌙</span>
+                  <h4 style="color: #f8fafc; margin: 0; font-size: 0.95rem; font-weight: 700;">Dinner Session</h4>
+                  <span style="color: #94a3b8; font-size: 0.72rem;">(07:00 PM - 11:00 PM)</span>
+                </div>
+              </div>
+              <div id="adminDinnerList" style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Injected via AdminKitchenSystem.loadAll -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PANEL B (RIGHT): DAILY DINING ORDERS & CONSUMPTION LOG -->
+        <div id="adminPanelOrdersAudit" style="background: #1e293b; border: 1px solid #334155; border-radius: 14px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.25);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #334155; padding-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+            <div>
+              <h3 style="color: #fff; margin: 0; font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 8px; font-family: var(--font-outfit);">
+                <span>📜</span> Daily Dining Orders &amp; Consumption Log
+              </h3>
+              <p style="color: #94a3b8; margin: 2px 0 0; font-size: 0.78rem;">
+                Read-only audit log tracking guest room service orders and room billing charges.
+              </p>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <select id="adminOrdersStatusFilter" onchange="window.AdminKitchenSystem.loadOrders()" style="background: #0f172a; color: #f8fafc; border: 1px solid #475569; padding: 5px 10px; border-radius: 6px; font-size: 0.78rem;">
+                <option value="">All Statuses</option>
+                <option value="active">Active (Pending/Preparing)</option>
+                <option value="pending">Pending Only</option>
+                <option value="preparing">Preparing Only</option>
+                <option value="delivered">Delivered</option>
+                <option value="billed">Billed to Folio / Paid</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <button type="button" onclick="window.AdminKitchenSystem.loadOrders()" style="background: #334155; color: #fff; border: 1px solid #475569; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 4px;">
+                🔄 Sync
+              </button>
+            </div>
+          </div>
+
+          <!-- Orders Table Container -->
+          <div style="overflow-x: auto; max-height: 620px; overflow-y: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+              <thead>
+                <tr style="border-bottom: 1px solid #334155; color: #94a3b8; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; position: sticky; top: 0; background: #1e293b; z-index: 2;">
+                  <th style="padding: 10px 8px;">ORDER #</th>
+                  <th style="padding: 10px 8px;">ROOM &amp; GUEST</th>
+                  <th style="padding: 10px 8px;">DISH &amp; QUANTITY</th>
+                  <th style="padding: 10px 8px;">TOTAL PRICE</th>
+                  <th style="padding: 10px 8px;">ORDER TIME</th>
+                  <th style="padding: 10px 8px; text-align: right;">STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="adminKitchenOrdersTableBody">
+                <!-- Injected dynamically via AdminKitchenSystem.loadOrders -->
+              </tbody>
+            </table>
+          </div>
+
+          <div id="adminEmptyKitchenOrders" style="display: none; text-align: center; padding: 36px 20px; color: #94a3b8;">
+            <span style="font-size: 2.2rem; opacity: 0.7;">🛎️</span>
+            <p style="margin: 8px 0 0; font-size: 0.9rem; color: #cbd5e1;">No in-room dining orders match this criteria.</p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+  </div><!-- .app-layout -->
+
+  <!-- Toast Notification Feedback Component -->
+  <div id="toastNotification" class="toast">
+    <svg class="toast-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+    <span id="toastMessage">Action completed successfully</span>
+  </div>
+
+  <!-- HTML Dialog User Registration Modal (Requested Popup) -->
+  <dialog id="addUserModal" closedby="any" aria-labelledby="dialogTitle">
+    <div class="modal-header">
+      <h3 id="dialogTitle">Add New System User</h3>
+      <button class="btn-close" onclick="closeModal()" aria-label="Close dialog">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <form id="addUserForm" onsubmit="handleCreateUser(event)">
+      <div class="modal-body">
+        <div id="addUserAlert" style="display: none; margin-bottom: 1rem;"></div>
+        <div class="form-group">
+          <label class="form-label" for="newUserName">Full Name *</label>
+          <input type="text" id="newUserName" class="form-input" placeholder="e.g. Robert Miller" required autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newUserEmail">Email Address *</label>
+          <input type="email" id="newUserEmail" class="form-input" placeholder="e.g. rmiller@pinnaclebay.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newUserRole">System Role *</label>
+          <select id="newUserRole" class="form-select" required>
+            <option value="admin">Administrator</option>
+            <option value="receptionist">Receptionist</option>
+            <option value="operations">Operations/Housekeeping</option>
+            <option value="finance">Finance Officer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newUserDesignation">Job Title / Designation</label>
+          <input type="text" id="newUserDesignation" class="form-input" placeholder="e.g. Head Chef, Room Attendant, Security Officer">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newUserStatus">Account Status</label>
+          <select id="newUserStatus" class="form-select">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn-primary">Create Account</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Edit User Modal Dialog -->
+  <dialog id="editUserModal" closedby="any" aria-labelledby="editDialogTitle">
+    <div class="modal-header">
+      <h3 id="editDialogTitle">Edit System User</h3>
+      <button class="btn-close" onclick="closeEditModal()" aria-label="Close dialog">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <form id="editUserForm" onsubmit="handleEditUserSubmit(event)">
+      <input type="hidden" id="editUserId">
+      <div class="modal-body">
+        <div id="editUserAlert" style="display: none; margin-bottom: 1rem;"></div>
+        <div class="form-group">
+          <label class="form-label" for="editUserName">Full Name *</label>
+          <input type="text" id="editUserName" class="form-input" required autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editUserEmail">Email Address *</label>
+          <input type="email" id="editUserEmail" class="form-input" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editUserRole">System Role *</label>
+          <select id="editUserRole" class="form-select" required>
+            <option value="admin">Administrator</option>
+            <option value="receptionist">Receptionist</option>
+            <option value="operations">Operations/Housekeeping</option>
+            <option value="finance">Finance Officer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editUserDesignation">Job Title / Designation</label>
+          <input type="text" id="editUserDesignation" class="form-input" placeholder="e.g. Head Chef, Room Attendant, Security Officer">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editUserStatus">Account Status</label>
+          <select id="editUserStatus" class="form-select">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="suspended">Suspended</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeEditModal()">Cancel</button>
+        <button type="submit" class="btn-primary">Save Changes</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Edit Attendance Record Modal Dialog -->
+  <dialog id="editAttendanceModal" closedby="any" aria-labelledby="editAttDialogTitle">
+    <div class="modal-header">
+      <h3 id="editAttDialogTitle">Edit Attendance Record</h3>
+      <button class="btn-close" onclick="closeEditAttendanceModal()" aria-label="Close dialog">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <form id="editAttendanceForm" onsubmit="handleEditAttendanceSubmit(event)">
+      <input type="hidden" id="editAttId">
+      <div class="modal-body">
+        <div id="editAttendanceAlert" style="display: none; margin-bottom: 1rem;"></div>
+        <div class="form-group">
+          <label class="form-label" for="editAttStaffDisplay">Staff Member</label>
+          <input type="text" id="editAttStaffDisplay" class="form-input" readonly style="opacity: 0.85; cursor: not-allowed; background: rgba(255,255,255,0.03);">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editAttDate">Date *</label>
+          <input type="date" id="editAttDate" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editAttShift">Assigned Shift *</label>
+          <select id="editAttShift" class="form-select" required>
+            <option value="Morning Shift (8:00 AM - 5:00 PM)">Morning Shift (8:00 AM - 5:00 PM)</option>
+            <option value="Evening Shift (2:00 PM - 11:00 PM)">Evening Shift (2:00 PM - 11:00 PM)</option>
+            <option value="Night Shift (10:00 PM - 7:00 AM)">Night Shift (10:00 PM - 7:00 AM)</option>
+            <option value="Custom / Flexible Shift">Custom / Flexible Shift</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editAttStatus">Attendance Status</label>
+          <select id="editAttStatus" class="form-select">
+            <option value="Present">Present</option>
+            <option value="Absent">Absent</option>
+            <option value="Half Day">Half Day</option>
+            <option value="Leave">Leave</option>
+          </select>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="editAttClockIn">Clock-In Time</label>
+            <input type="text" id="editAttClockIn" class="form-input" placeholder="e.g. 08:00 AM">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editAttClockOut">Clock-Out Time</label>
+            <input type="text" id="editAttClockOut" class="form-input" placeholder="e.g. 05:00 PM">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="editAttExtraHours">Extra / OT Hours</label>
+          <input type="number" id="editAttExtraHours" class="form-input" min="0" max="12" step="0.5" value="0">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" onclick="closeEditAttendanceModal()">Cancel</button>
+        <button type="submit" class="btn-primary">Update Record</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Clock-Out Staff Modal Dialog -->
+  <dialog id="clockOutModal" closedby="any" aria-labelledby="clockOutDialogTitle">
+    <div class="modal-header">
+      <div>
+        <h3 id="clockOutDialogTitle" style="font-family: var(--font-outfit); font-size: 1.25rem; font-weight: 700; color: var(--text-white); margin-bottom: 0.2rem;">Staff Clock-Out & Overtime</h3>
+        <p style="font-size: 0.85rem; color: var(--text-gray); margin: 0;">Log verified departure time and record automatic shift overtime.</p>
+      </div>
+      <button class="btn-close" type="button" onclick="closeClockOutModal()" aria-label="Close dialog">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <form id="clockOutForm" onsubmit="handleConfirmClockOut(event)">
+      <input type="hidden" id="clockOutRecordId">
+      <input type="hidden" id="clockOutStaffNameVal">
+      <input type="hidden" id="clockOutShiftEndMinutes">
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        
+        <!-- Staff Info Summary Card -->
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 0.25rem;">Staff Member</div>
+            <div id="clockOutStaffName" style="font-size: 1.1rem; font-weight: 700; color: var(--text-white);">--</div>
+            <div id="clockOutStaffSub" style="font-size: 0.8rem; color: var(--text-gray);">--</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 0.25rem;">Scheduled Shift</div>
+            <div id="clockOutShiftBadge" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.75rem; border-radius: 6px; background: rgba(var(--accent-gold-rgb), 0.12); color: var(--accent-gold); border: 1px solid rgba(var(--accent-gold-rgb), 0.3); font-weight: 700; font-size: 0.85rem;">
+              Morning (Ends 5:00 PM)
+            </div>
+          </div>
+        </div>
+
+        <!-- Actual Clock-Out Time Input -->
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label" for="modalClockOutTime" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Actual Clock-Out Time *</span>
+            <span style="font-weight: 400; font-size: 0.8rem; color: var(--text-gray);">Scheduled End: <strong id="modalScheduledEndText" style="color: var(--accent-gold);">5:00 PM</strong></span>
+          </label>
+          <select id="modalClockOutTime" class="form-select" required onchange="calculateModalOT()">
+            <option value="00:00">12:00 AM</option>
+            <option value="00:30">12:30 AM</option>
+            <option value="01:00">01:00 AM</option>
+            <option value="01:30">01:30 AM</option>
+            <option value="02:00">02:00 AM</option>
+            <option value="02:30">02:30 AM</option>
+            <option value="03:00">03:00 AM</option>
+            <option value="03:30">03:30 AM</option>
+            <option value="04:00">04:00 AM</option>
+            <option value="04:30">04:30 AM</option>
+            <option value="05:00">05:00 AM</option>
+            <option value="05:30">05:30 AM</option>
+            <option value="06:00">06:00 AM</option>
+            <option value="06:30">06:30 AM</option>
+            <option value="07:00">07:00 AM</option>
+            <option value="07:30">07:30 AM</option>
+            <option value="08:00">08:00 AM</option>
+            <option value="08:30">08:30 AM</option>
+            <option value="09:00">09:00 AM</option>
+            <option value="09:30">09:30 AM</option>
+            <option value="10:00">10:00 AM</option>
+            <option value="10:30">10:30 AM</option>
+            <option value="11:00">11:00 AM</option>
+            <option value="11:30">11:30 AM</option>
+            <option value="12:00">12:00 PM</option>
+            <option value="12:30">12:30 PM</option>
+            <option value="13:00">01:00 PM</option>
+            <option value="13:30">01:30 PM</option>
+            <option value="14:00">02:00 PM</option>
+            <option value="14:30">02:30 PM</option>
+            <option value="15:00">03:00 PM</option>
+            <option value="15:30">03:30 PM</option>
+            <option value="16:00">04:00 PM</option>
+            <option value="16:30">04:30 PM</option>
+            <option value="17:00">05:00 PM</option>
+            <option value="17:30">05:30 PM</option>
+            <option value="18:00">06:00 PM</option>
+            <option value="18:30">06:30 PM</option>
+            <option value="19:00">07:00 PM</option>
+            <option value="19:30">07:30 PM</option>
+            <option value="20:00">08:00 PM</option>
+            <option value="20:30">08:30 PM</option>
+            <option value="21:00">09:00 PM</option>
+            <option value="21:30">09:30 PM</option>
+            <option value="22:00">10:00 PM</option>
+            <option value="22:30">10:30 PM</option>
+            <option value="23:00">11:00 PM</option>
+            <option value="23:30">11:30 PM</option>
+          </select>
+        </div>
+
+        <!-- Live OT Calculation Preview Card -->
+        <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid var(--border-color); border-radius: 10px; padding: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+            <span style="font-size: 0.85rem; color: var(--text-gray);">Overtime Calculation:</span>
+            <span id="modalOTBadge" style="font-weight: 700; font-size: 1.05rem; color: var(--accent-gold); display: inline-flex; align-items: center; gap: 0.35rem;">
+              +0.0 hrs OT
+            </span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 0.75rem;">
+            <span>Scheduled Departure: <strong id="modalShiftEndSummary" style="color: var(--text-gray);">05:00 PM</strong></span>
+            <span>Actual Departure: <strong id="modalActualOutSummary" style="color: var(--text-white);">05:00 PM</strong></span>
+          </div>
+          <div id="modalOTDescription" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem; line-height: 1.4;">
+            If actual departure is on or before scheduled shift end time, overtime is 0.0 hrs.
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="margin-top: 1rem;">
+        <button type="button" class="btn-secondary" onclick="closeClockOutModal()">Cancel</button>
+        <button type="submit" id="btnConfirmClockOut" class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669); border: none; font-weight: 700;">
+          <svg style="width: 18px; height: 18px; fill: currentColor;" viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+          Confirm Clock-Out & Log OT
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    // Initial seeded dummy users matching EXACTLY counts of: 24 total, 18 active, 4 roles.
+    let users = [
+      { id: 101, name: 'Bimsara', email: 'bimsara@pinnaclebay.com', role: 'admin', designation: 'General Manager', status: 'active' },
+      { id: 102, name: 'Vimaya', email: 'vimaya@pinnaclebay.com', role: 'receptionist', designation: 'Front Desk Lead', status: 'active' },
+      { id: 103, name: 'Hirushan', email: 'hirushan@pinnaclebay.com', role: 'operations', designation: 'Operations Supervisor', status: 'active' },
+      { id: 104, name: 'Malith', email: 'malith@pinnaclebay.com', role: 'finance', designation: 'Chief Financial Officer', status: 'active' },
+      { id: 105, name: 'Jonathan Pierce', email: 'jpierce@pinnaclebay.com', role: 'receptionist', designation: 'Night Auditor', status: 'active' },
+      { id: 106, name: 'Alice Winters', email: 'awinters@pinnaclebay.com', role: 'admin', designation: 'IT Director', status: 'active' },
+      { id: 107, name: 'Robert Chen', email: 'rchen@pinnaclebay.com', role: 'operations', designation: 'Housekeeping Lead', status: 'active' },
+      { id: 108, name: 'Sofia Martinez', email: 'smartinez@pinnaclebay.com', role: 'finance', designation: 'Senior Accountant', status: 'active' },
+      { id: 109, name: 'Thomas Mueller', email: 'tmueller@pinnaclebay.com', role: 'receptionist', designation: 'Concierge Specialist', status: 'active' },
+      { id: 110, name: 'Emily Watson', email: 'ewatson@pinnaclebay.com', role: 'operations', designation: 'Head Chef', status: 'active' },
+      { id: 111, name: 'James Fletcher', email: 'jfletcher@pinnaclebay.com', role: 'finance', designation: 'Payroll Officer', status: 'active' },
+      { id: 112, name: 'Lisa Sterling', email: 'lsterling@pinnaclebay.com', role: 'receptionist', designation: 'Receptionist', status: 'active' },
+      { id: 113, name: 'Victor Hugo', email: 'vhugo@pinnaclebay.com', role: 'operations', designation: 'Maintenance Tech', status: 'active' },
+      { id: 114, name: 'Nina Simone', email: 'nsimone@pinnaclebay.com', role: 'finance', designation: 'Billing Clerk', status: 'active' },
+      { id: 115, name: 'Alan Turing', email: 'aturing@pinnaclebay.com', role: 'admin', designation: 'Systems Architect', status: 'active' },
+      { id: 116, name: 'Grace Hopper', email: 'ghopper@pinnaclebay.com', role: 'admin', designation: 'Database Administrator', status: 'active' },
+      { id: 117, name: 'Donald Knuth', email: 'dknuth@pinnaclebay.com', role: 'operations', designation: 'Security Officer', status: 'active' },
+      { id: 118, name: 'Ada Lovelace', email: 'alovelace@pinnaclebay.com', role: 'finance', designation: 'Auditor', status: 'active' },
+      // Inactive/Suspended staff (Total: 6)
+      { id: 119, name: 'Richard Feynman', email: 'rfeynman@pinnaclebay.com', role: 'operations', designation: 'Room Attendant', status: 'suspended' },
+      { id: 120, name: 'Marie Curie', email: 'mcurie@pinnaclebay.com', role: 'finance', designation: 'Junior Accountant', status: 'inactive' },
+      { id: 121, name: 'Nikola Tesla', email: 'ntesla@pinnaclebay.com', role: 'operations', designation: 'HVAC Technician', status: 'inactive' },
+      { id: 122, name: 'Albert Einstein', email: 'aeinstein@pinnaclebay.com', role: 'receptionist', designation: 'Front Desk Associate', status: 'suspended' },
+      { id: 123, name: 'Katherine Johnson', email: 'kjohnson@pinnaclebay.com', role: 'admin', designation: 'Compliance Analyst', status: 'inactive' },
+      { id: 124, name: 'Stephen Hawking', email: 'shawking@pinnaclebay.com', role: 'finance', designation: 'Financial Analyst', status: 'suspended' }
+    ];
+
+    let attendanceRecords = [];
+
+    const userTableBody = document.getElementById('userTableBody');
+    const emptyState = document.getElementById('emptyState');
+    const dialogElement = document.getElementById('addUserModal');
+    const kpiTotalUsers = document.getElementById('kpiTotalUsers');
+    const kpiActiveStaff = document.getElementById('kpiActiveStaff');
+    const kpiRolesConfigured = document.getElementById('kpiRolesConfigured');
+    const searchInput = document.getElementById('searchInput');
+    const roleFilter = document.getElementById('roleFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const userNameHeader = document.getElementById('userNameHeader');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Pull name from session if available
+      const sessionUser = localStorage.getItem('currentUser') || localStorage.getItem('user') || sessionStorage.getItem('currentUser') || sessionStorage.getItem('user');
+      if (sessionUser) {
+        try {
+          const u = JSON.parse(sessionUser);
+          if (userNameHeader && u.name) userNameHeader.textContent = u.name.split(' (')[0]; // strip role details
+        } catch (e) {
+          console.error('Session user parse error:', e);
+        }
+      }
+
+      // Initialize default date in attendance form to today and restrict to today or earlier
+      const todayStr = new Date().toISOString().split('T')[0];
+      const attDateInput = document.getElementById('attDate');
+      if (attDateInput) {
+        attDateInput.value = todayStr;
+        attDateInput.max = todayStr;
+      }
+      const editAttDateInput = document.getElementById('editAttDate');
+      if (editAttDateInput) {
+        editAttDateInput.max = todayStr;
+      }
+
+      // Independent initialization tasks wrapped in try/catch to ensure full DOM resilience
+      try { fetchUsers(); } catch (e) { console.error('fetchUsers init error:', e); }
+      try { fetchAttendance(); } catch (e) { console.error('fetchAttendance init error:', e); }
+      try { checkDBStatus(); } catch (e) { console.error('checkDBStatus init error:', e); }
+      try { setupDialogLightDismiss(); } catch (e) { console.error('setupDialogLightDismiss error:', e); }
+
+      // Check URL hash or query for initial tab
+      try {
+        if (window.location.hash === '#kitchen' || window.location.hash === '#kitchen-dining') {
+          switchAdminTab('kitchen-dining');
+        }
+        window.addEventListener('hashchange', () => {
+          if (window.location.hash === '#kitchen' || window.location.hash === '#kitchen-dining') {
+            switchAdminTab('kitchen-dining');
+          }
+        });
+      } catch (e) {
+        console.error('Hash change listener setup error:', e);
+      }
+    });
+
+    // Global Tab Switching Logic matching exact 5-step operational definition
+    window.switchAdminTab = function(tabName) {
+      try {
+        // 1. Hide all tab panels / views
+        const allPanels = document.querySelectorAll('.tab-content, .module-view, .tab-view, #staff-governance-view, #kitchen-dining-view, #reports-view, #viewGovernance, #viewAttendance, #viewReports, #viewKitchenDining');
+        allPanels.forEach(p => p.style.display = 'none');
+
+        // 2. Remove active state styling from all sidebar buttons
+        const navButtons = document.querySelectorAll('.nav-btn, .sidebar button, .sidebar-nav-item, [onclick*="switchAdminTab"]');
+        navButtons.forEach(btn => {
+          btn.classList.remove('active');
+          btn.style.background = 'transparent';
+          btn.style.color = '#94a3b8';
+        });
+
+        // 3. Display target tab
+        const targetPanel = document.getElementById(tabName + '-view') || 
+                            document.getElementById(tabName) ||
+                            document.getElementById('view' + tabName.charAt(0).toUpperCase() + tabName.slice(1)) ||
+                            document.getElementById(tabName === 'governance' ? 'viewGovernance' : tabName === 'attendance' ? 'viewAttendance' : tabName === 'reports' ? 'viewReports' : (tabName === 'kitchen' || tabName === 'kitchen-dining') ? 'viewKitchenDining' : null);
+        if (targetPanel) {
+          targetPanel.style.display = (tabName === 'kitchen-dining' || tabName === 'kitchen' || targetPanel.id === 'viewKitchenDining' || tabName === 'attendance' || targetPanel.id === 'viewAttendance') ? 'flex' : 'block';
+        }
+
+        // 4. Highlight active button
+        if (typeof event !== 'undefined' && event && event.currentTarget) {
+          event.currentTarget.classList.add('active');
+          event.currentTarget.style.background = '#1e293b';
+          event.currentTarget.style.color = '#ffffff';
+        } else {
+          const matchedBtn = document.getElementById(tabName === 'governance' ? 'tabGovernanceBtn' : tabName === 'attendance' ? 'tabAttendanceBtn' : tabName === 'reports' ? 'tabReportsBtn' : (tabName === 'kitchen' || tabName === 'kitchen-dining') ? 'navKitchenDining' : null);
+          if (matchedBtn) {
+            matchedBtn.classList.add('active');
+            matchedBtn.style.background = '#1e293b';
+            matchedBtn.style.color = '#ffffff';
+          }
+        }
+
+        // 5. Load data if switching to kitchen oversight or specific module
+        if ((tabName === 'kitchen-dining' || tabName === 'kitchen') && typeof window.loadAdminDiningOversight === 'function') {
+          window.loadAdminDiningOversight();
+        } else if ((tabName === 'kitchen-dining' || tabName === 'kitchen') && window.AdminKitchenSystem && typeof window.AdminKitchenSystem.loadAll === 'function') {
+          window.AdminKitchenSystem.loadAll();
+        }
+
+        if (tabName === 'attendance') {
+          try { if (typeof populateStaffDropdown === 'function') populateStaffDropdown(); } catch (e) { }
+          try { if (typeof fetchAttendance === 'function') fetchAttendance(); } catch (e) { }
+          try { if (typeof initMonthlyAttendanceSummary === 'function') initMonthlyAttendanceSummary(); } catch (e) { }
+        } else if (tabName === 'reports') {
+          try { if (typeof generateSystemReport === 'function') generateSystemReport(); } catch (e) { }
+        }
+      } catch (err) {
+        console.error('Error switching admin tabs:', err);
+      }
+    };
+    var switchAdminTab = window.switchAdminTab;
+
+    // ==========================================
+    // Admin Kitchen & Dining Oversight System (Read-Only Executive Audit)
+    // ==========================================
+    window.AdminKitchenSystem = {
+      loadAll: async function() {
+        try {
+          // 1. Fetch Menu Items
+          var res = await fetch('/api/menu');
+          if (res.ok) {
+            var data = await res.json();
+            var items = Array.isArray(data) ? data : (data.items || data.data || []);
+
+            var bList = document.getElementById('adminBreakfastList');
+            var lList = document.getElementById('adminLunchList');
+            var dList = document.getElementById('adminDinnerList');
+            var totalBadge = document.getElementById('adminMenuTotalDishesBadge');
+
+            if (totalBadge) totalBadge.textContent = items.length + ' Dish' + (items.length === 1 ? '' : 'es');
+
+            if (bList && lList && dList) {
+              bList.innerHTML = ''; lList.innerHTML = ''; dList.innerHTML = '';
+
+              var createDishCard = function(item) {
+                var card = document.createElement('div');
+                var isAvail = Boolean(item.is_available);
+                var priceVal = parseFloat(item.price) || (item.meal_type === 'Breakfast' ? 16.00 : item.meal_type === 'Dinner' ? 32.00 : 22.00);
+                
+                card.style = `background: #0f172a; padding: 12px 14px; border-radius: 8px; border: 1px solid ${isAvail ? '#334155' : 'rgba(239, 68, 68, 0.3)'}; transition: all 0.2s ease; margin-bottom: 4px;`;
+                card.id = `admin-ovs-dish-${item.item_id}`;
+                card.innerHTML = `
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                    <div style="flex: 1; min-width: 0;">
+                      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <h5 style="color: #fff; margin: 0; font-size: 0.92rem; font-weight: 700;">${item.item_name}</h5>
+                        <span style="background: ${isAvail ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)'}; color: ${isAvail ? '#34d399' : '#f87171'}; border: 1px solid ${isAvail ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.35)'}; font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
+                          ${isAvail ? 'AVAILABLE' : 'SOLD OUT'}
+                        </span>
+                      </div>
+                      <p style="color: #94a3b8; font-size: 0.76rem; margin: 4px 0 0 0; line-height: 1.35;">
+                        ${item.description || 'Pinnacle Bay culinary specialty.'}
+                      </p>
+                    </div>
+                    
+                    <!-- Clean Read-Only Price Tag -->
+                    <div style="display: inline-flex; align-items: center; gap: 2px; background: #1e293b; padding: 4px 10px; border-radius: 6px; border: 1px solid #334155; white-space: nowrap;">
+                      <span style="color: #c5a059; font-weight: 800; font-size: 0.82rem;">Rs. </span>
+                      <span style="color: #38bdf8; font-weight: 800; font-size: 0.88rem;">${priceVal.toFixed(2)}</span>
+                    </div>
+                  </div>
+                `;
+                return card;
+              };
+
+              var bCount = 0, lCount = 0, dCount = 0;
+              items.forEach(function(item) {
+                var sess = (item.meal_type || '').toLowerCase();
+                var card = createDishCard(item);
+                if (sess === 'breakfast') { bList.appendChild(card); bCount++; }
+                else if (sess === 'lunch') { lList.appendChild(card); lCount++; }
+                else if (sess === 'dinner') { dList.appendChild(card); dCount++; }
+                else { bList.appendChild(card); bCount++; }
+              });
+
+              if (bCount === 0) bList.innerHTML = '<div style="color: #64748b; font-size: 0.78rem; text-align: center; padding: 10px;">No breakfast dishes configured.</div>';
+              if (lCount === 0) lList.innerHTML = '<div style="color: #64748b; font-size: 0.78rem; text-align: center; padding: 10px;">No lunch dishes configured.</div>';
+              if (dCount === 0) dList.innerHTML = '<div style="color: #64748b; font-size: 0.78rem; text-align: center; padding: 10px;">No dinner dishes configured.</div>';
+            }
+          }
+        } catch (e) {
+          console.error('Admin menu load error:', e);
+        }
+
+        // 2. Load Live Orders
+        await window.AdminKitchenSystem.loadOrders();
+      },
+
+      loadOrders: async function() {
+        try {
+          var tbody = document.getElementById('adminKitchenOrdersTableBody');
+          var emptyEl = document.getElementById('adminEmptyKitchenOrders');
+          var statusFilter = document.getElementById('adminOrdersStatusFilter');
+          var filterVal = statusFilter ? statusFilter.value.trim().toLowerCase() : '';
+
+          if (!tbody) return;
+
+          var url = '/api/orders/room-service';
+          if (filterVal) url += '?status=' + encodeURIComponent(filterVal);
+
+          var res = await fetch(url);
+          if (!res.ok) return;
+          var data = await res.json();
+          var orders = data.orders || data.data || [];
+          var counts = data.counts || {};
+
+          // Update Admin Executive Dining Analytics Counters
+          var activeCount = counts.active !== undefined ? counts.active : orders.filter(function(o) {
+            return ['PENDING', 'PREPARING'].includes((o.status || '').toUpperCase());
+          }).length;
+          var pendingCount = counts.pending !== undefined ? counts.pending : orders.filter(function(o) {
+            return (o.status || '').toUpperCase() === 'PENDING';
+          }).length;
+          var preparingCount = counts.preparing !== undefined ? counts.preparing : orders.filter(function(o) {
+            return (o.status || '').toUpperCase() === 'PREPARING';
+          }).length;
+          var deliveredCount = counts.delivered !== undefined ? counts.delivered : orders.filter(function(o) {
+            return (o.status || '').toUpperCase() === 'DELIVERED';
+          }).length;
+          var billedCount = counts.billed !== undefined ? counts.billed : orders.filter(function(o) {
+            return ['BILLED', 'PAID', 'FOLIO'].includes((o.status || '').toUpperCase());
+          }).length;
+          var dailyRev = data.daily_revenue !== undefined ? parseFloat(data.daily_revenue) : (counts.daily_revenue || 0);
+
+          // Calculate total individual dishes/plates ordered today (sum of quantities from all orders)
+          var totalDishesDispatched = orders.reduce(function(sum, o) {
+            return sum + (parseInt(o.quantity, 10) || 1);
+          }, 0);
+
+          var setTxt = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
+          setTxt('adminKpiActiveOrdersCount', activeCount);
+          setTxt('adminKpiPendingCount', pendingCount);
+          setTxt('adminKpiPreparingCount', preparingCount);
+          setTxt('adminKpiDeliveredCount', deliveredCount);
+          setTxt('adminKpiBilledCount', billedCount);
+          setTxt('adminKpiTotalOrdersCount', counts.total !== undefined ? counts.total : orders.length);
+          setTxt('adminKpiDailyDiningRevenue', Number(dailyRev).toFixed(2));
+          setTxt('adminKpiTotalDishesDispatched', totalDishesDispatched);
+
+          if (orders.length === 0) {
+            tbody.innerHTML = '';
+            if (emptyEl) emptyEl.style.display = 'block';
+            return;
+          }
+
+          if (emptyEl) emptyEl.style.display = 'none';
+
+          tbody.innerHTML = orders.map(function(o) {
+            var statusUpper = (o.status || 'PENDING').toUpperCase();
+            var statusBg = 'rgba(245, 158, 11, 0.15)';
+            var statusColor = '#fbbf24';
+            var statusBorder = 'rgba(245, 158, 11, 0.3)';
+            var statusText = '⏳ PENDING';
+
+            if (statusUpper === 'PREPARING') {
+              statusBg = 'rgba(59, 130, 246, 0.15)';
+              statusColor = '#60a5fa';
+              statusBorder = 'rgba(59, 130, 246, 0.3)';
+              statusText = '🍳 PREPARING';
+            } else if (statusUpper === 'DELIVERED') {
+              statusBg = 'rgba(16, 185, 129, 0.15)';
+              statusColor = '#34d399';
+              statusBorder = 'rgba(16, 185, 129, 0.3)';
+              statusText = '✅ DELIVERED';
+            } else if (statusUpper === 'BILLED' || statusUpper === 'PAID' || statusUpper === 'FOLIO') {
+              statusBg = 'rgba(197, 160, 89, 0.15)';
+              statusColor = '#c5a059';
+              statusBorder = 'rgba(197, 160, 89, 0.3)';
+              statusText = '💳 BILLED TO FOLIO';
+            } else if (statusUpper === 'CANCELLED') {
+              statusBg = 'rgba(239, 68, 68, 0.15)';
+              statusColor = '#f87171';
+              statusBorder = 'rgba(239, 68, 68, 0.3)';
+              statusText = '❌ CANCELLED';
+            }
+
+            var orderTimeFormatted = o.order_time ? new Date(o.order_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
+            var totalPriceVal = parseFloat(o.total_price) || ((parseFloat(o.price) || 20) * (parseInt(o.quantity) || 1));
+            var unitPriceVal = parseFloat(o.price) || (totalPriceVal / (parseInt(o.quantity) || 1));
+
+            return `
+              <tr style="border-bottom: 1px solid #334155; transition: background 0.15s;" onmouseover="this.style.background='#0f172a'" onmouseout="this.style.background='transparent'">
+                <td style="padding: 10px 8px;">
+                  <div style="font-weight: 700; color: #c5a059; font-size: 0.85rem;">#ORD-${String(o.order_id).padStart(3, '0')}</div>
+                </td>
+                <td style="padding: 10px 8px;">
+                  <div style="font-weight: 700; color: #38bdf8;">Room ${o.room_number || o.room_no}</div>
+                  <div style="font-size: 0.75rem; color: #cbd5e1;">${o.guest_name || 'Guest'}</div>
+                </td>
+                <td style="padding: 10px 8px;">
+                  <div style="color: #fff; font-weight: 600; font-size: 0.84rem;">
+                    ${o.dish_name || o.item_name}
+                    <span style="background: rgba(197, 168, 128, 0.2); color: #c5a059; padding: 1px 5px; border-radius: 4px; font-size: 0.72rem; font-weight: 800; margin-left: 4px;">x${o.quantity || 1}</span>
+                  </div>
+                  ${o.special_instructions && o.special_instructions !== 'None' ? `<div style="font-size: 0.72rem; color: #fbbf24; margin-top: 2px;">📝 ${o.special_instructions}</div>` : ''}
+                </td>
+                <td style="padding: 10px 8px;">
+                  <div style="font-weight: 800; color: #34d399; font-size: 0.9rem;">Rs. ${totalPriceVal.toFixed(2)}</div>
+                  <div style="font-size: 0.7rem; color: #94a3b8;">Rs. ${unitPriceVal.toFixed(2)} ea</div>
+                </td>
+                <td style="padding: 10px 8px;">
+                  <div style="color: #cbd5e1; font-size: 0.8rem; font-weight: 500;">${orderTimeFormatted}</div>
+                </td>
+                <td style="padding: 10px 8px; text-align: right;">
+                  <span style="background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder}; font-size: 0.7rem; font-weight: 700; padding: 3px 7px; border-radius: 6px; white-space: nowrap;">
+                    ${statusText}
+                  </span>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        } catch (e) {
+          console.error('Admin kitchen orders load error:', e);
+        }
+      }
+    };
+
+    // Auto-refresh interval (30 seconds) for live kitchen audit data
+    setInterval(function() {
+      var kitView = document.getElementById('viewKitchenDining');
+      if (kitView && kitView.style.display !== 'none') {
+        window.AdminKitchenSystem.loadAll();
+      }
+    }, 30000);
+
+    // Populate staff member dropdown in attendance form
+    function populateStaffDropdown() {
+      const select = document.getElementById('attStaffSelect');
+      if (!select) return;
+
+      const currentVal = select.value;
+      select.innerHTML = '<option value="">-- Select Staff Member --</option>';
+
+      users.forEach(u => {
+        const staffId = u.user_id ? u.user_id : (typeof u.id === 'string' && u.id.startsWith('PB-') ? u.id : `PB-USR-${u.id}`);
+        const opt = document.createElement('option');
+        opt.value = staffId;
+        opt.dataset.name = u.name;
+        const desigSuffix = u.designation ? ` - ${u.designation}` : '';
+        opt.textContent = `[${staffId}] ${u.name} (${formatRole(u.role)}${desigSuffix})`;
+        select.appendChild(opt);
+      });
+
+      if (currentVal) select.value = currentVal;
+
+      // Also populate the monthly summary staff dropdown
+      if (typeof populateMonthlyStaffDropdown === 'function') {
+        populateMonthlyStaffDropdown(users);
+      }
+    }
+
+    function handleStaffSelectionChange() {
+      const select = document.getElementById('attStaffSelect');
+      const selectedOpt = select.options[select.selectedIndex];
+      if (selectedOpt && selectedOpt.value) {
+        document.getElementById('attStaffId').value = selectedOpt.value;
+        document.getElementById('attStaffName').value = selectedOpt.dataset.name || '';
+      } else {
+        document.getElementById('attStaffId').value = '';
+        document.getElementById('attStaffName').value = '';
+      }
+    }
+
+    // Toast feedback function
+    function showToast(message, isError = false) {
+      const toast = document.getElementById('toastNotification');
+      const toastMsg = document.getElementById('toastMessage');
+      if (!toast) return;
+
+      toastMsg.textContent = message;
+      if (isError) {
+        toast.style.borderColor = '#ef4444';
+        toast.style.borderLeftColor = '#ef4444';
+      } else {
+        toast.style.borderColor = 'var(--accent-gold)';
+        toast.style.borderLeftColor = 'var(--accent-gold)';
+      }
+
+      toast.classList.add('active');
+      setTimeout(() => {
+        toast.classList.remove('active');
+      }, 3500);
+    }
+
+    function checkDBStatus() {
+      const dbStatusBadge = document.getElementById('dbStatusBadge');
+      const dbStatusDot = document.getElementById('dbStatusDot');
+      const dbStatusText = document.getElementById('dbStatusText');
+
+      const API_BASE = window.location.origin.includes('localhost:3000') 
+        ? '' 
+        : 'http://localhost:3000';
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+      fetch(`${API_BASE}/api/db-status`, { signal: controller.signal })
+        .then(res => {
+          clearTimeout(timeoutId);
+          return res.json();
+        })
+        .then(data => {
+          if (data && data.success && data.connected) {
+            if (dbStatusBadge) {
+              dbStatusBadge.style.background = 'rgba(16, 185, 129, 0.1)';
+              dbStatusBadge.style.borderColor = 'rgba(16, 185, 129, 0.25)';
+              dbStatusBadge.style.color = '#10b981';
+            }
+            if (dbStatusDot) {
+              dbStatusDot.style.backgroundColor = '#10b981';
+              dbStatusDot.style.boxShadow = '0 0 8px #10b981';
+            }
+            if (dbStatusText) {
+              dbStatusText.textContent = `DB Connected: MS SQL (${data.database || 'PinnacleBayDB'})`;
+            }
+          } else {
+            setDBDisconnected(dbStatusBadge, dbStatusDot, dbStatusText, data ? (data.message || 'Offline') : 'Disconnected');
+          }
+        })
+        .catch(err => {
+          clearTimeout(timeoutId);
+          console.warn('DB Status check failed or timed out:', err);
+          setDBDisconnected(dbStatusBadge, dbStatusDot, dbStatusText, err.name === 'AbortError' ? 'Timeout' : 'Disconnected');
+        });
+    }
+    window.checkDBStatus = checkDBStatus;
+
+    function setDBDisconnected(badge, dot, text, reason) {
+      if (!badge || !text) return;
+      badge.style.background = 'rgba(239, 68, 68, 0.1)';
+      badge.style.borderColor = 'rgba(239, 68, 68, 0.25)';
+      badge.style.color = '#ef4444';
+      if (dot) {
+        dot.style.backgroundColor = '#ef4444';
+        dot.style.boxShadow = '0 0 8px #ef4444';
+      }
+      text.innerHTML = `<span style="color: #ef4444;">● DB Disconnected</span>${reason ? ` <span style="font-size:0.75rem;opacity:0.8;">(${reason})</span>` : ''}`;
+    }
+
+    function fetchUsers() {
+      const API_BASE = window.location.origin.includes('localhost:3000') 
+        ? '' 
+        : 'http://localhost:3000';
+        
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4500);
+
+      fetch(`${API_BASE}/api/users`, { signal: controller.signal })
+        .then(res => {
+          clearTimeout(timeoutId);
+          if (!res.ok) throw new Error('Network response not ok: ' + res.status);
+          return res.json();
+        })
+        .then(data => {
+          if (data && data.success && Array.isArray(data.users)) {
+            users = data.users;
+          }
+          renderTable();
+          populateStaffDropdown();
+        })
+        .catch(err => {
+          clearTimeout(timeoutId);
+          console.warn('Failed to fetch from user API, rendering fallback dataset:', err);
+          renderTable(); // resilient fallback render
+          populateStaffDropdown();
+        });
+    }
+    window.fetchUsers = fetchUsers;
+    window.loadUsers = fetchUsers;
+    window.loadStats = updateSummaryKPIs;
+
+    // Populate user table
+    function renderTable() {
+      userTableBody.innerHTML = '';
+      const filtered = getFilteredUsers();
+
+      if (filtered.length === 0) {
+        emptyState.style.display = 'block';
+      } else {
+        emptyState.style.display = 'none';
+        
+        filtered.forEach(user => {
+          const row = document.createElement('tr');
+          row.id = `user-row-${user.id}`;
+          
+          const desigHtml = user.designation
+            ? `<div style="font-size: 0.78rem; color: var(--accent-gold); font-weight: 500; margin-top: 0.2rem;">${user.designation}</div>`
+            : `<div style="font-size: 0.75rem; color: var(--text-muted); font-style: italic; margin-top: 0.2rem;">No designation</div>`;
+
+          row.innerHTML = `
+            <td style="font-weight: 600; color: var(--text-gray)">PB-USR-${user.id}</td>
+            <td>
+              <div style="font-weight: 600; color: var(--text-white)">${user.name}</div>
+              ${desigHtml}
+            </td>
+            <td>${user.email}</td>
+            <td><span class="role-badge">${formatRole(user.role)}</span></td>
+            <td><span class="badge badge-${user.status}">${user.status}</span></td>
+            <td>
+              <div class="actions-cell">
+                <button class="btn-icon" title="Edit User Details" onclick="openEditModal(${user.id})">
+                  <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                </button>
+                <button class="btn-icon" title="Toggle Account Status" onclick="toggleUserStatus(${user.id})">
+                  <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                </button>
+                <button class="btn-icon btn-delete" title="Delete User Account" onclick="deleteUser(${user.id})">
+                  <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                </button>
+              </div>
+            </td>
+          `;
+          
+          userTableBody.appendChild(row);
+        });
+      }
+
+      updateSummaryKPIs();
+    }
+
+    // Filter Logic
+    function getFilteredUsers() {
+      const search = searchInput.value.toLowerCase().trim();
+      const role = roleFilter.value;
+      const status = statusFilter.value;
+
+      return users.filter(user => {
+        const matchesSearch = 
+          user.name.toLowerCase().includes(search) || 
+          (user.designation && user.designation.toLowerCase().includes(search)) ||
+          user.email.toLowerCase().includes(search) || 
+          `PB-USR-${user.id}`.toLowerCase().includes(search);
+
+        const matchesRole = (role === 'all') || (user.role === role);
+        const matchesStatus = (status === 'all') || (user.status === status);
+
+        return matchesSearch && matchesRole && matchesStatus;
+      });
+    }
+
+    function filterTable() {
+      renderTable();
+    }
+
+    // Helpers
+    function formatRole(role) {
+      const formats = {
+        admin: 'Admin',
+        receptionist: 'Receptionist',
+        operations: 'Operations',
+        finance: 'Finance Officer'
+      };
+      return formats[role.toLowerCase()] || role;
+    }
+
+    // Summary calculation
+    function updateSummaryKPIs() {
+      kpiTotalUsers.textContent = users.length;
+      kpiActiveStaff.textContent = users.filter(u => u.status === 'active').length;
+      
+      // Calculate configured roles from list
+      const roles = new Set(users.map(u => u.role));
+      kpiRolesConfigured.textContent = roles.size;
+    }
+
+    // Dialog Modal Functions
+    function openModal() {
+      dialogElement.showModal();
+    }
+
+    function closeModal() {
+      dialogElement.close();
+      document.getElementById('addUserForm').reset();
+    }
+
+    // Fallback script for light-dismiss dialog (backdrop clicks)
+    function setupDialogLightDismiss() {
+      if (!('closedBy' in HTMLDialogElement.prototype)) {
+        const clockOutModal = document.getElementById('clockOutModal');
+        const dialogs = [dialogElement, editUserModal, editAttendanceModal, clockOutModal];
+        dialogs.forEach(dlg => {
+          if (!dlg) return;
+          dlg.addEventListener('click', (event) => {
+            if (event.target !== dlg) return;
+            const rect = dlg.getBoundingClientRect();
+            const isInside = (
+              rect.top <= event.clientY &&
+              event.clientY <= rect.top + rect.height &&
+              rect.left <= event.clientX &&
+              event.clientX <= rect.left + rect.width
+            );
+            if (!isInside) {
+              if (dlg === dialogElement) closeModal();
+              else if (dlg === editUserModal) closeEditModal();
+              else if (dlg === editAttendanceModal) closeEditAttendanceModal();
+              else if (dlg === clockOutModal) closeClockOutModal();
+            }
+          });
+        });
+      }
+    }
+
+    // Handle user creation
+    function handleCreateUser(e) {
+      e.preventDefault();
+      if (typeof clearInlineAlert === 'function') {
+        clearInlineAlert('addUserAlert');
+      }
+      
+      const name = document.getElementById('newUserName').value.trim();
+      const email = document.getElementById('newUserEmail').value.trim();
+      const role = document.getElementById('newUserRole').value;
+      const designation = document.getElementById('newUserDesignation').value.trim();
+      const status = document.getElementById('newUserStatus').value;
+
+      if (!name || !email || !role) {
+        const msg = 'Full name, email address, and role are required.';
+        if (typeof showInlineAlert === 'function') showInlineAlert('addUserAlert', msg, 'error');
+        showToast(msg, true);
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        const msg = 'Please enter a valid email address.';
+        if (typeof showInlineAlert === 'function') showInlineAlert('addUserAlert', msg, 'error');
+        showToast(msg, true);
+        return;
+      }
+
+      const API_BASE = window.location.origin.includes('localhost:3000') 
+        ? '' 
+        : 'http://localhost:3000';
+
+      fetch(`${API_BASE}/api/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password: 'password123',
+          role,
+          designation
+        })
+      })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => { throw err; });
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          if (typeof clearInlineAlert === 'function') clearInlineAlert('addUserAlert');
+          closeModal();
+          showToast('User created successfully');
+          fetchUsers(); // Re-fetch list to update table and KPIs dynamically
+        } else {
+          const errMsg = data.error || data.message || 'Failed to create user';
+          if (typeof showInlineAlert === 'function') showInlineAlert('addUserAlert', errMsg, 'error');
+          showToast('Error: ' + errMsg, true);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to create user:', err);
+        const errMsg = err.error || err.message || 'Unable to connect to the server to create user.';
+        if (typeof showInlineAlert === 'function') showInlineAlert('addUserAlert', errMsg, 'error');
+        showToast(errMsg, true);
+      });
+    }
+
+    // Toggle user status: active -> inactive -> suspended (Live DB Persistence)
+    async function toggleUserStatus(userId) {
+      const user = users.find(u => u.id === userId || u.user_id === userId);
+      if (!user) return;
+
+      const statuses = ['active', 'inactive', 'suspended'];
+      const currentIdx = statuses.indexOf((user.status || 'active').toLowerCase());
+      const nextIdx = (currentIdx + 1) % statuses.length;
+      const nextStatus = statuses[nextIdx];
+
+      const API_BASE = window.location.origin.includes('localhost:3000') ? '' : 'http://localhost:3000';
+
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/users/${userId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: nextStatus })
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.success) {
+          user.status = nextStatus;
+          renderTable();
+          showToast(`Status updated to ${nextStatus.toUpperCase()} for ${user.name}`);
+        } else {
+          showToast(data.message || 'Failed to update user status', true);
+        }
+      } catch (err) {
+        console.error('Toggle status error:', err);
+        showToast('Network error while updating status', true);
+      }
+    }
+
+    // Delete user
+    function deleteUser(userId) {
+      const user = users.find(u => u.id === userId || u.user_id === userId);
+      if (!user) return;
+
+      const userName = user.name || `User #${userId}`;
+      const staffId = user.user_id || (typeof user.id === 'string' && user.id.startsWith('PB-') ? user.id : `PB-USR-${user.id}`);
+
+      if (confirm(`Are you sure you want to permanently delete: ${userName}? All associated attendance records will also be removed.`)) {
+        const API_BASE = window.location.origin.includes('localhost:3000') 
+          ? '' 
+          : 'http://localhost:3000';
+
+        fetch(`${API_BASE}/api/admin/users/${userId}`, {
+          method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            showToast(data.message || `Deleted ${userName} and related attendance records.`);
+          } else {
+            showToast(data.message || `Deleted ${userName}`, true);
+          }
+          // Remove from local users array
+          users = users.filter(u => u.id !== userId && u.user_id !== userId);
+          renderTable();
+          populateStaffDropdown();
+
+          // Cascade remove from local attendance records and reload
+          attendanceRecords = attendanceRecords.filter(a => 
+            a.staff_id !== staffId && 
+            a.staff_id !== userId.toString() && 
+            a.staff_name !== userName
+          );
+          renderAttendanceTable();
+          fetchAttendance();
+          fetchUsers();
+        })
+        .catch(err => {
+          console.error('Delete user error:', err);
+          // Local fallback deletion
+          users = users.filter(u => u.id !== userId && u.user_id !== userId);
+          renderTable();
+          populateStaffDropdown();
+          attendanceRecords = attendanceRecords.filter(a => 
+            a.staff_id !== staffId && 
+            a.staff_id !== userId.toString() && 
+            a.staff_name !== userName
+          );
+          renderAttendanceTable();
+          showToast(`Deleted ${userName}`);
+        });
+      }
+    }
+
+    // Edit Modal Dialog triggers
+    const editUserModal = document.getElementById('editUserModal');
+    
+    function openEditModal(userId) {
+      const user = users.find(u => u.id === userId || u.id === parseInt(userId) || u.user_id === userId);
+      if (user) {
+        if (typeof clearInlineAlert === 'function') clearInlineAlert('editUserAlert');
+        document.getElementById('editUserId').value = user.id || user.user_id;
+        document.getElementById('editUserName').value = user.name || user.full_name || '';
+        document.getElementById('editUserEmail').value = user.email || '';
+        document.getElementById('editUserRole').value = (user.role || 'admin').toLowerCase();
+        document.getElementById('editUserDesignation').value = user.designation || '';
+        document.getElementById('editUserStatus').value = (user.status || 'active').toLowerCase();
+        editUserModal.showModal();
+      }
+    }
+
+    function closeEditModal() {
+      if (typeof clearInlineAlert === 'function') clearInlineAlert('editUserAlert');
+      editUserModal.close();
+      document.getElementById('editUserForm').reset();
+    }
+
+    function handleEditUserSubmit(e) {
+      e.preventDefault();
+      if (typeof clearInlineAlert === 'function') clearInlineAlert('editUserAlert');
+      
+      const id = document.getElementById('editUserId').value;
+      const name = document.getElementById('editUserName').value.trim();
+      const email = document.getElementById('editUserEmail').value.trim();
+      const role = document.getElementById('editUserRole').value;
+      const designation = document.getElementById('editUserDesignation').value.trim();
+      const status = document.getElementById('editUserStatus').value;
+
+      if (!name || !email || !role) {
+        const msg = 'Full name, email address, and role are required.';
+        if (typeof showInlineAlert === 'function') showInlineAlert('editUserAlert', msg, 'error');
+        showToast(msg, true);
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        const msg = 'Please enter a valid email address.';
+        if (typeof showInlineAlert === 'function') showInlineAlert('editUserAlert', msg, 'error');
+        showToast(msg, true);
+        return;
+      }
+
+      const API_BASE = window.location.origin.includes('localhost:3000') 
+        ? '' 
+        : 'http://localhost:3000';
+
+      const payload = {
+        name: name,
+        full_name: name,
+        email: email,
+        role: role,
+        designation: designation,
+        status: status
+      };
+
+      fetch(`${API_BASE}/api/admin/users/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => { throw err; });
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          if (typeof clearInlineAlert === 'function') clearInlineAlert('editUserAlert');
+          closeEditModal();
+          showToast('User profile updated successfully');
+
+          // Update local state immediately
+          const userIdx = users.findIndex(u => u.id == id || u.user_id == id);
+          if (userIdx !== -1) {
+            users[userIdx].name = name;
+            users[userIdx].full_name = name;
+            users[userIdx].email = email;
+            users[userIdx].role = role;
+            users[userIdx].designation = designation;
+            users[userIdx].status = status;
+          }
+          renderTable();
+          populateStaffDropdown();
+
+          fetchUsers();
+        } else {
+          const errMsg = data.error || data.message || 'Failed to update user';
+          if (typeof showInlineAlert === 'function') showInlineAlert('editUserAlert', errMsg, 'error');
+          showToast(errMsg, true);
+        }
+      })
+      .catch(err => {
+        console.error('Edit user error:', err);
+        const errMsg = err.error || err.message || 'Network error while updating user';
+        if (typeof showInlineAlert === 'function') showInlineAlert('editUserAlert', errMsg, 'error');
+        showToast(errMsg, true);
+      });
+    }
+
+    // Handle logout link redirect
+    function handleLogout(event) {
+      event.preventDefault();
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      window.location.href = 'index.html';
+    }
+
+    // ==========================================
+    // Attendance Management Functions
+    // ==========================================
+
+    // Fetch attendance from backend with timeout protection
+    function fetchAttendance() {
+      const API_BASE = window.location.origin.includes('localhost:3000') ? '' : 'http://localhost:3000';
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4500);
+
+      fetch(`${API_BASE}/api/admin/attendance`, { signal: controller.signal })
+        .then(res => {
+          clearTimeout(timeoutId);
+          if (!res.ok) throw new Error('Failed to load attendance: ' + res.status);
+          return res.json();
+        })
+        .then(data => {
+          if (Array.isArray(data)) {
+            attendanceRecords = data;
+          } else if (data && data.data && Array.isArray(data.data)) {
+            attendanceRecords = data.data;
+          } else {
+            attendanceRecords = [];
+          }
+          renderAttendanceTable();
+        })
+        .catch(err => {
+          clearTimeout(timeoutId);
+          console.warn('Failed to fetch attendance records:', err);
+          renderAttendanceTable();
+        });
+    }
+    window.fetchAttendance = fetchAttendance;
+
+    // Render attendance records in table
+    function renderAttendanceTable() {
+      const tbody = document.getElementById('attendanceTableBody');
+      const empty = document.getElementById('attEmptyState');
+      if (!tbody) return;
+
+      tbody.innerHTML = '';
+      const filtered = getFilteredAttendance();
+
+      if (filtered.length === 0) {
+        if (empty) empty.style.display = 'block';
+      } else {
+        if (empty) empty.style.display = 'none';
+
+        filtered.forEach(rec => {
+          const row = document.createElement('tr');
+          row.id = `att-row-${rec.id}`;
+
+          let statusBadgeClass = 'badge-present';
+          const s = (rec.status || 'present').toLowerCase();
+          if (s === 'absent') statusBadgeClass = 'badge-absent';
+          else if (s === 'half day' || s === 'halfday') statusBadgeClass = 'badge-half-day';
+          else if (s === 'leave') statusBadgeClass = 'badge-leave';
+
+          const otVal = parseFloat(rec.ot_hours !== undefined ? rec.ot_hours : rec.extra_hours) || 0;
+          const otBadge = otVal > 0
+            ? `<span style="display:inline-flex; align-items:center; gap:0.35rem; background:rgba(var(--accent-gold-rgb), 0.12); color:var(--accent-gold); border:1px solid rgba(var(--accent-gold-rgb), 0.3); padding:0.2rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.8rem;">+${otVal.toFixed(1)} hrs OT</span>`
+            : `<span style="color:var(--text-muted); font-size:0.85rem;">0.0 hrs</span>`;
+
+          const isPresent = (s === 'present' || s === 'on duty');
+          const hasClockOut = !!rec.clock_out_time && rec.clock_out_time !== '--:--' && rec.clock_out_time !== 'Pending';
+
+          // Status Badge: If marked Present without clock-out -> "On Duty"
+          let statusHtml = '';
+          if (isPresent && !hasClockOut) {
+            statusHtml = `
+              <span class="badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+                <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981;"></span>
+                On Duty
+              </span>
+            `;
+          } else {
+            statusHtml = `<span class="badge ${statusBadgeClass}">${rec.status}</span>`;
+          }
+
+          // Clock In / Out Column
+          const clockInDisplay = rec.clock_in_time || '--:--';
+          const clockOutDisplay = hasClockOut 
+            ? `<strong style="color:var(--text-white);">${rec.clock_out_time}</strong>` 
+            : (isPresent ? '<span style="color: var(--accent-gold); font-weight: 600;">Pending</span>' : '<span style="color: var(--text-muted);">--:--</span>');
+
+          // Action Button: Clock Out if On Duty
+          const clockOutBtn = (isPresent && !hasClockOut)
+            ? `<button type="button" class="btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; height: 32px; gap: 0.35rem; background: linear-gradient(135deg, #10b981, #059669); border: none; font-weight: 700; white-space: nowrap; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);" onclick="openClockOutModal(${rec.id})" title="Clock Out Staff & Log OT">
+                <svg style="width: 14px; height: 14px; fill: currentColor;" viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                Clock Out
+              </button>`
+            : '';
+
+          row.innerHTML = `
+            <td style="font-weight:600; color:var(--text-gray); font-family:var(--font-outfit);">${rec.date}</td>
+            <td>
+              <div style="font-weight:600; color:var(--text-white);">${rec.staff_name}</div>
+              <div style="font-size:0.75rem; color:var(--text-gray);">${rec.staff_id}</div>
+            </td>
+            <td><span class="role-badge" style="background-color:rgba(255,255,255,0.03);">${rec.shift_name || 'Standard'}</span></td>
+            <td style="font-size:0.85rem; color:var(--text-gray); white-space: nowrap;">
+              <span style="color:var(--text-muted);">In:</span> <strong style="color:var(--text-white);">${clockInDisplay}</strong> &nbsp;|&nbsp; 
+              <span style="color:var(--text-muted);">Out:</span> ${clockOutDisplay}
+            </td>
+            <td>${statusHtml}</td>
+            <td>${otBadge}</td>
+            <td>
+              <div class="actions-cell" style="display: flex; align-items: center; gap: 0.45rem;">
+                ${clockOutBtn}
+                <button class="btn-icon" title="Edit Attendance Record" onclick="openEditAttendanceModal(${rec.id})">
+                  <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                </button>
+                <button class="btn-icon btn-delete" title="Delete Attendance Record" onclick="deleteAttendanceRecord(${rec.id}, '${(rec.staff_name || '').replace(/'/g, "\\'")}', '${rec.date}')">
+                  <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                </button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+
+      updateAttendanceKPIs();
+    }
+
+    // Filter attendance records
+    function getFilteredAttendance() {
+      const search = (document.getElementById('attSearchInput')?.value || '').toLowerCase().trim();
+      const filterDate = document.getElementById('attFilterDate')?.value || '';
+      const filterStatus = (document.getElementById('attFilterStatus')?.value || 'all').toLowerCase();
+
+      return attendanceRecords.filter(rec => {
+        const matchesSearch = !search ||
+          (rec.staff_name && rec.staff_name.toLowerCase().includes(search)) ||
+          (rec.staff_id && rec.staff_id.toLowerCase().includes(search)) ||
+          (rec.shift_name && rec.shift_name.toLowerCase().includes(search));
+
+        const matchesDate = !filterDate || rec.date === filterDate;
+        
+        let matchesStatus = true;
+        if (filterStatus !== 'all') {
+          const recStatus = (rec.status || '').toLowerCase();
+          const hasOut = !!rec.clock_out_time && rec.clock_out_time !== '--:--' && rec.clock_out_time !== 'Pending';
+          if (filterStatus === 'present') {
+            matchesStatus = recStatus === 'present' || recStatus === 'on duty';
+          } else {
+            matchesStatus = recStatus === filterStatus;
+          }
+        }
+
+        return matchesSearch && matchesDate && matchesStatus;
+      });
+    }
+
+    function filterAttendanceTable() {
+      renderAttendanceTable();
+    }
+
+    function resetAttendanceFilters() {
+      if (document.getElementById('attSearchInput')) document.getElementById('attSearchInput').value = '';
+      if (document.getElementById('attFilterDate')) document.getElementById('attFilterDate').value = '';
+      if (document.getElementById('attFilterStatus')) document.getElementById('attFilterStatus').value = 'all';
+      renderAttendanceTable();
+    }
+
+    // Update Attendance KPIs
+    function updateAttendanceKPIs() {
+      const today = new Date().toISOString().split('T')[0];
+      const presentToday = attendanceRecords.filter(r => r.date === today && (r.status || '').toLowerCase() === 'present').length;
+      const totalOT = attendanceRecords.reduce((sum, r) => sum + (parseFloat(r.ot_hours !== undefined ? r.ot_hours : r.extra_hours) || 0), 0);
+
+      const kpiPresent = document.getElementById('kpiPresentCount');
+      const kpiOT = document.getElementById('kpiTotalExtraHours');
+      const kpiTotal = document.getElementById('kpiTotalRecords');
+
+      if (kpiPresent) kpiPresent.textContent = presentToday;
+      if (kpiOT) kpiOT.textContent = `${totalOT.toFixed(1)} hrs`;
+      if (kpiTotal) kpiTotal.textContent = attendanceRecords.length;
+    }
+
+    // Helper to parse time strings into minutes from midnight
+    function parseTimeToMinutes(timeStr) {
+      if (!timeStr) return null;
+      const match12 = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if (match12) {
+        let hours = parseInt(match12[1], 10);
+        const mins = parseInt(match12[2], 10);
+        const meridiem = match12[3].toUpperCase();
+        if (meridiem === 'PM' && hours < 12) hours += 12;
+        if (meridiem === 'AM' && hours === 12) hours = 0;
+        return hours * 60 + mins;
+      }
+      const match24 = timeStr.match(/^(\d{1,2}):(\d{2})$/);
+      if (match24) {
+        return parseInt(match24[1], 10) * 60 + parseInt(match24[2], 10);
+      }
+      return null;
+    }
+
+    // Record new attendance entry (Step 1: Clock-In)
+    function handleRecordAttendance(e) {
+      e.preventDefault();
+      handleStaffSelectionChange();
+
+      if (typeof clearInlineAlert === 'function') {
+        clearInlineAlert('attendanceFormAlert');
+      }
+
+      const staff_id = document.getElementById('attStaffId').value.trim();
+      const staff_name = document.getElementById('attStaffName').value.trim();
+      const date = document.getElementById('attDate').value;
+      const shift_name = document.getElementById('attShift').value;
+      const status = document.getElementById('attStatus').value;
+      const customClockIn = document.getElementById('attClockInTime')?.value?.trim();
+      const customClockOut = document.getElementById('attClockOutTime')?.value?.trim();
+      const otInput = document.getElementById('attExtraHours')?.value;
+      const ot_hours = otInput !== undefined && otInput !== null && otInput !== '' ? parseFloat(otInput) : 0;
+
+      // 1. Validate required fields & logic via admin-oversight helper if available
+      if (typeof validateAttendanceForm === 'function') {
+        const isValid = validateAttendanceForm({
+          staff_id,
+          date,
+          shift: shift_name,
+          ot_hours,
+          clock_in: customClockIn,
+          clock_out: customClockOut,
+          alertContainerId: 'attendanceFormAlert'
+        });
+        if (!isValid) return;
+      } else {
+        if (!staff_id || !staff_name || !date) {
+          const msg = 'Please select a valid staff member and date';
+          if (typeof showInlineAlert === 'function') showInlineAlert('attendanceFormAlert', msg, 'error');
+          showToast(msg, true);
+          return;
+        }
+
+        if (!shift_name) {
+          const msg = 'Assigned shift is required.';
+          if (typeof showInlineAlert === 'function') showInlineAlert('attendanceFormAlert', msg, 'error');
+          showToast(msg, true);
+          return;
+        }
+
+        if (isNaN(ot_hours) || ot_hours < 0) {
+          const msg = 'OT hours cannot be negative.';
+          if (typeof showInlineAlert === 'function') showInlineAlert('attendanceFormAlert', msg, 'error');
+          showToast(msg, true);
+          return;
+        }
+
+        if (ot_hours > 12) {
+          const msg = 'Overtime hours must be between 0 and 12';
+          if (typeof showInlineAlert === 'function') showInlineAlert('attendanceFormAlert', msg, 'error');
+          showToast(msg, true);
+          return;
+        }
+
+        if (customClockIn && customClockOut) {
+          const timeValidation = typeof validateAttendanceTimes === 'function'
+            ? validateAttendanceTimes(customClockIn, customClockOut)
+            : { valid: true };
+          if (!timeValidation.valid) {
+            const msg = timeValidation.error || 'Clock-out time cannot be earlier than clock-in time.';
+            if (typeof showInlineAlert === 'function') showInlineAlert('attendanceFormAlert', msg, 'error');
+            showToast(msg, true);
+            return;
+          }
+        }
+      }
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      if (date > todayStr) {
+        const msg = 'Attendance date cannot be in the future';
+        if (typeof showInlineAlert === 'function') showInlineAlert('attendanceFormAlert', msg, 'error');
+        showToast(msg, true);
+        return;
+      }
+
+      const validStatuses = ['PRESENT', 'ABSENT', 'HALF DAY', 'LEAVE'];
+      if (!validStatuses.includes(status.toUpperCase())) {
+        const msg = 'Invalid attendance status selected';
+        if (typeof showInlineAlert === 'function') showInlineAlert('attendanceFormAlert', msg, 'error');
+        showToast(msg, true);
+        return;
+      }
+
+      // Automatically determine clock-in time from shift start if not provided
+      const shiftTimes = shift_name.match(/\((.*?)\s*-\s*(.*?)\)/);
+      const defaultClockIn = shiftTimes ? shiftTimes[1].trim() : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+
+      const finalClockIn = customClockIn || (status.toUpperCase() === 'PRESENT' ? defaultClockIn : null);
+      const finalClockOut = customClockOut || null;
+
+      const API_BASE = window.location.origin.includes('localhost:3000') ? '' : 'http://localhost:3000';
+
+      fetch(`${API_BASE}/api/admin/attendance`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          staff_id,
+          user_id: staff_id,
+          staff_name,
+          date,
+          work_date: date,
+          shift_name,
+          status,
+          extra_hours: ot_hours,
+          ot_hours: ot_hours,
+          clock_in_time: finalClockIn,
+          clock_out_time: finalClockOut
+        })
+      })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => { throw err; });
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          if (typeof clearInlineAlert === 'function') {
+            clearInlineAlert('attendanceFormAlert');
+          }
+          const shiftShort = shift_name.split('(')[0].trim();
+          showToast(`Attendance recorded for ${staff_name} (${shiftShort})!`);
+          
+          // Reset form fields
+          document.getElementById('attStaffSelect').value = '';
+          document.getElementById('attStaffId').value = '';
+          document.getElementById('attStaffName').value = '';
+          document.getElementById('attStatus').value = 'Present';
+          document.getElementById('attDate').value = new Date().toISOString().split('T')[0];
+          if (document.getElementById('attClockInTime')) document.getElementById('attClockInTime').value = '';
+          if (document.getElementById('attClockOutTime')) document.getElementById('attClockOutTime').value = '';
+          if (document.getElementById('attExtraHours')) document.getElementById('attExtraHours').value = '0';
+          
+          fetchAttendance();
+        } else {
+          const errMsg = data.error || data.message || 'Failed to record attendance';
+          if (typeof showInlineAlert === 'function') showInlineAlert('attendanceFormAlert', errMsg, 'error');
+          showToast(errMsg, true);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to save attendance:', err);
+        const errMsg = err.error || err.message || 'Unable to connect to server';
+        if (typeof showInlineAlert === 'function') showInlineAlert('attendanceFormAlert', errMsg, 'error');
+        showToast(errMsg, true);
+      });
+    }
+
+    // ==========================================
+    // Clock-Out Modal & Overtime Logic (Step 2)
+    // ==========================================
+    const clockOutModal = document.getElementById('clockOutModal');
+
+    function openClockOutModal(recordId) {
+      const rec = attendanceRecords.find(r => r.id === recordId);
+      if (!rec) return;
+
+      document.getElementById('clockOutRecordId').value = rec.id;
+      document.getElementById('clockOutStaffNameVal').value = rec.staff_name;
+      document.getElementById('clockOutStaffName').textContent = rec.staff_name;
+      document.getElementById('clockOutStaffSub').textContent = `${rec.staff_id} • Date: ${rec.date}`;
+
+      // Extract scheduled shift end time
+      const shiftTimes = (rec.shift_name || '').match(/\((.*?)\s*-\s*(.*?)\)/);
+      const shiftEndStr = shiftTimes ? shiftTimes[2].trim() : '5:00 PM';
+      const shiftNameClean = (rec.shift_name || 'Standard').split('(')[0].trim();
+
+      document.getElementById('clockOutShiftBadge').textContent = `${shiftNameClean} (Ends ${shiftEndStr})`;
+      document.getElementById('modalScheduledEndText').textContent = shiftEndStr;
+      document.getElementById('modalShiftEndSummary').textContent = shiftEndStr;
+
+      // Set initial clock-out selection (default to shift end time in 24h format)
+      const selectEl = document.getElementById('modalClockOutTime');
+      if (selectEl) {
+        let default24 = '17:00';
+        const match = shiftEndStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+        if (match) {
+          let h = parseInt(match[1], 10);
+          const m = match[2];
+          const ampm = match[3].toUpperCase();
+          if (ampm === 'PM' && h < 12) h += 12;
+          if (ampm === 'AM' && h === 12) h = 0;
+          default24 = `${h.toString().padStart(2, '0')}:${m}`;
+        }
+        
+        if (selectEl.querySelector(`option[value="${default24}"]`)) {
+          selectEl.value = default24;
+        } else {
+          selectEl.value = '17:00';
+        }
+      }
+
+      calculateModalOT();
+      if (clockOutModal) {
+        clockOutModal.showModal();
+      }
+    }
+
+    function closeClockOutModal() {
+      if (clockOutModal) {
+        clockOutModal.close();
+      }
+    }
+
+    function calculateModalOT() {
+      const selectEl = document.getElementById('modalClockOutTime');
+      const actualTimeVal = selectEl ? selectEl.value : '17:00';
+      const selectedOption = selectEl ? selectEl.options[selectEl.selectedIndex] : null;
+      const actualTimeLabel = selectedOption ? selectedOption.text : actualTimeVal;
+
+      const modalActualOutSummary = document.getElementById('modalActualOutSummary');
+      if (modalActualOutSummary) {
+        modalActualOutSummary.textContent = actualTimeLabel;
+      }
+
+      const recId = parseInt(document.getElementById('clockOutRecordId')?.value, 10);
+      const rec = attendanceRecords.find(r => r.id === recId);
+      const shiftStr = rec ? (rec.shift_name || '') : '';
+      const shiftTimes = shiftStr.match(/\((.*?)\s*-\s*(.*?)\)/);
+
+      let startMins = shiftTimes ? parseTimeToMinutes(shiftTimes[1]) : 8 * 60;
+      let endMins = shiftTimes ? parseTimeToMinutes(shiftTimes[2]) : 17 * 60;
+      let actualMins = parseTimeToMinutes(actualTimeVal);
+
+      if (startMins === null) startMins = 8 * 60;
+      if (endMins === null) endMins = 17 * 60;
+      if (actualMins === null) actualMins = endMins;
+
+      // Handle overnight shifts crossing midnight (e.g. 10 PM to 7 AM)
+      if (endMins < startMins) {
+        endMins += 24 * 60;
+        if (actualMins < startMins) {
+          actualMins += 24 * 60;
+        }
+      } else {
+        if (actualMins < startMins && actualMins < endMins) {
+          actualMins += 24 * 60;
+        }
+      }
+
+      const diffMins = actualMins - endMins;
+      let otHours = 0;
+      if (diffMins > 0) {
+        otHours = Math.round((diffMins / 60) * 10) / 10;
+      }
+
+      const otBadge = document.getElementById('modalOTBadge');
+      const otDesc = document.getElementById('modalOTDescription');
+
+      if (otBadge && otDesc) {
+        if (otHours > 0) {
+          otBadge.textContent = `+${otHours.toFixed(1)} hrs OT`;
+          otBadge.style.color = 'var(--accent-gold)';
+          otDesc.innerHTML = `<span style="color:#10b981; font-weight:700;">+${otHours.toFixed(1)} hrs Overtime</span> logged (Actual departure is ${Math.round(diffMins)} mins past shift end). Linked directly to Finance Payroll.`;
+        } else {
+          otBadge.textContent = `0.0 hrs OT`;
+          otBadge.style.color = 'var(--text-muted)';
+          otDesc.textContent = `Actual departure is on or before scheduled shift end. Standard shift logged with 0 overtime.`;
+        }
+      }
+
+      return otHours;
+    }
+
+    function handleConfirmClockOut(e) {
+      e.preventDefault();
+
+      const recId = document.getElementById('clockOutRecordId').value;
+      const staffName = document.getElementById('clockOutStaffNameVal').value;
+      const selectEl = document.getElementById('modalClockOutTime');
+      const clock_out_time = selectEl ? selectEl.options[selectEl.selectedIndex].text : '';
+      const ot_hours = calculateModalOT();
+
+      if (!recId) {
+        showToast('Invalid attendance record', true);
+        return;
+      }
+
+      const API_BASE = window.location.origin.includes('localhost:3000') ? '' : 'http://localhost:3000';
+
+      fetch(`${API_BASE}/api/admin/attendance/clock-out/${recId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          clock_out_time,
+          ot_hours,
+          status: 'Present'
+        })
+      })
+      .then(res => {
+        if (!res.ok) return res.json().then(err => { throw err; });
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          closeClockOutModal();
+          showToast(`Clock-out saved for ${staffName}! (+${ot_hours.toFixed(1)} hrs OT logged)`);
+          fetchAttendance();
+        } else {
+          showToast(data.message || 'Failed to record clock-out', true);
+        }
+      })
+      .catch(err => {
+        console.error('Clock-out error:', err);
+        showToast(err.message || 'Unable to connect to server', true);
+      });
+    }
+    window.openClockOutModal = openClockOutModal;
+    window.closeClockOutModal = closeClockOutModal;
+    window.calculateModalOT = calculateModalOT;
+    window.handleConfirmClockOut = handleConfirmClockOut;
+
+    // Delete attendance entry
+    function deleteAttendanceRecord(id, staffName, date) {
+      if (confirm(`Are you sure you want to delete the attendance record for ${staffName} on ${date}?`)) {
+        const API_BASE = window.location.origin.includes('localhost:3000') ? '' : 'http://localhost:3000';
+
+        fetch(`${API_BASE}/api/admin/attendance/${id}`, {
+          method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            showToast('Attendance record deleted successfully');
+            fetchAttendance();
+          } else {
+            showToast(data.message || 'Failed to delete record', true);
+          }
+        })
+        .catch(err => {
+          console.error('Delete attendance error:', err);
+          showToast('Network error while deleting record', true);
+        });
+      }
+    }
+
+    // Edit Attendance Modal handlers
+    const editAttendanceModal = document.getElementById('editAttendanceModal');
+
+    function openEditAttendanceModal(recordId) {
+      const rec = attendanceRecords.find(r => r.id === recordId);
+      if (rec) {
+        if (typeof clearInlineAlert === 'function') clearInlineAlert('editAttendanceAlert');
+        document.getElementById('editAttId').value = rec.id;
+        document.getElementById('editAttStaffDisplay').value = `${rec.staff_name} (${rec.staff_id})`;
+        const editAttDateInput = document.getElementById('editAttDate');
+        if (editAttDateInput) {
+          editAttDateInput.value = rec.date;
+          editAttDateInput.max = new Date().toISOString().split('T')[0];
+        }
+        document.getElementById('editAttShift').value = rec.shift_name || 'Morning Shift (8:00 AM - 5:00 PM)';
+        document.getElementById('editAttStatus').value = rec.status || 'Present';
+        if (document.getElementById('editAttClockIn')) {
+          document.getElementById('editAttClockIn').value = rec.clock_in_time && rec.clock_in_time !== '--' ? rec.clock_in_time : '';
+        }
+        if (document.getElementById('editAttClockOut')) {
+          document.getElementById('editAttClockOut').value = rec.clock_out_time && rec.clock_out_time !== '--' ? rec.clock_out_time : '';
+        }
+        document.getElementById('editAttExtraHours').value = parseFloat(rec.ot_hours !== undefined ? rec.ot_hours : rec.extra_hours) || 0;
+        
+        if (editAttendanceModal) {
+          editAttendanceModal.showModal();
+        }
+      }
+    }
+
+    function closeEditAttendanceModal() {
+      if (typeof clearInlineAlert === 'function') clearInlineAlert('editAttendanceAlert');
+      if (editAttendanceModal) {
+        editAttendanceModal.close();
+      }
+      const form = document.getElementById('editAttendanceForm');
+      if (form) form.reset();
+    }
+
+    function handleEditAttendanceSubmit(e) {
+      e.preventDefault();
+      if (typeof clearInlineAlert === 'function') clearInlineAlert('editAttendanceAlert');
+
+      const id = document.getElementById('editAttId').value;
+      const date = document.getElementById('editAttDate').value;
+      const shift_name = document.getElementById('editAttShift').value;
+      const status = document.getElementById('editAttStatus').value;
+      const extra_hours = parseFloat(document.getElementById('editAttExtraHours').value) || 0;
+      const clock_in = document.getElementById('editAttClockIn')?.value?.trim();
+      const clock_out = document.getElementById('editAttClockOut')?.value?.trim();
+
+      if (!id || !date) {
+        const msg = 'Please provide valid date and attendance details';
+        if (typeof showInlineAlert === 'function') showInlineAlert('editAttendanceAlert', msg, 'error');
+        showToast(msg, true);
+        return;
+      }
+
+      if (!shift_name) {
+        const msg = 'Assigned shift is required.';
+        if (typeof showInlineAlert === 'function') showInlineAlert('editAttendanceAlert', msg, 'error');
+        showToast(msg, true);
+        return;
+      }
+
+      const todayStr = new Date().toISOString().split('T')[0];
+      if (date > todayStr) {
+        const msg = 'Attendance date cannot be in the future';
+        if (typeof showInlineAlert === 'function') showInlineAlert('editAttendanceAlert', msg, 'error');
+        showToast(msg, true);
+        return;
+      }
+
+      if (isNaN(extra_hours) || extra_hours < 0) {
+        const msg = 'OT hours cannot be negative.';
+        if (typeof showInlineAlert === 'function') showInlineAlert('editAttendanceAlert', msg, 'error');
+        showToast(msg, true);
+        return;
+      }
+
+      if (extra_hours > 12) {
+        const msg = 'Overtime hours must be between 0 and 12';
+        if (typeof showInlineAlert === 'function') showInlineAlert('editAttendanceAlert', msg, 'error');
+        showToast(msg, true);
+        return;
+      }
+
+      // Time logic validation
+      if (clock_in && clock_out) {
+        const timeCheck = (typeof validateAttendanceTimes === 'function')
+          ? validateAttendanceTimes(clock_in, clock_out)
+          : { valid: true };
+        if (!timeCheck.valid) {
+          const msg = timeCheck.error || 'Clock-out time cannot be earlier than clock-in time.';
+          if (typeof showInlineAlert === 'function') showInlineAlert('editAttendanceAlert', msg, 'error');
+          showToast(msg, true);
+          return;
+        }
+      }
+
+      const validStatuses = ['PRESENT', 'ABSENT', 'HALF DAY', 'LEAVE'];
+      if (!validStatuses.includes(status.toUpperCase())) {
+        const msg = 'Invalid attendance status selected';
+        if (typeof showInlineAlert === 'function') showInlineAlert('editAttendanceAlert', msg, 'error');
+        showToast(msg, true);
+        return;
+      }
+
+      const API_BASE = window.location.origin.includes('localhost:3000') ? '' : 'http://localhost:3000';
+
+      fetch(`${API_BASE}/api/admin/attendance/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          date,
+          shift_name,
+          status,
+          extra_hours,
+          ot_hours: extra_hours,
+          clock_in_time: clock_in || null,
+          clock_out_time: clock_out || null
+        })
+      })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => { throw err; });
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          if (typeof clearInlineAlert === 'function') clearInlineAlert('editAttendanceAlert');
+          closeEditAttendanceModal();
+          showToast('Attendance record updated successfully');
+          fetchAttendance();
+        } else {
+          const errMsg = data.error || data.message || 'Failed to update attendance record';
+          if (typeof showInlineAlert === 'function') showInlineAlert('editAttendanceAlert', errMsg, 'error');
+          showToast(errMsg, true);
+        }
+      })
+      .catch(err => {
+        console.error('Update attendance error:', err);
+        const errMsg = err.error || err.message || 'Network error while updating record';
+        if (typeof showInlineAlert === 'function') showInlineAlert('editAttendanceAlert', errMsg, 'error');
+        showToast(errMsg, true);
+      });
+    }
+
+    // ==========================================
+    // System Reports & Analytics Logic
+    // ==========================================
+
+    function generateSystemReport() {
+      const startDate = document.getElementById('reportStartDate')?.value || '';
+      const endDate = document.getElementById('reportEndDate')?.value || '';
+      const dept = document.getElementById('reportDeptFilter')?.value || 'all';
+
+      const API_BASE = window.location.origin.includes('localhost:3000') ? '' : 'http://localhost:3000';
+
+      // 1. Fetch Summary Aggregates
+      fetch(`${API_BASE}/api/admin/reports/summary`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.summary) {
+            updateReportSummaryCards(data.summary);
+          }
+        })
+        .catch(err => console.error('Failed to load report summary:', err));
+
+      // 2. Fetch Filtered Details
+      const params = new URLSearchParams();
+      if (dept) params.append('department', dept);
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
+
+      fetch(`${API_BASE}/api/admin/reports/details?${params.toString()}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to fetch report details');
+          return res.json();
+        })
+        .then(data => {
+          if (data && data.success) {
+            renderReportTables(data);
+          } else {
+            renderReportTables({ reservations: [], housekeeping: [], payroll: [] });
+          }
+        })
+        .catch(err => {
+          console.warn('Could not load report details:', err);
+          renderReportTables({ reservations: [], housekeeping: [], payroll: [] });
+        });
+    }
+
+    function updateReportSummaryCards(summary) {
+      const { reservations, rooms_and_turnaround, staff_and_payroll } = summary;
+
+      // Revenue & Reservations Card
+      const revVal = document.getElementById('reportKpiRevenue');
+      const resBadge = document.getElementById('reportKpiResBadge');
+      const revSub = document.getElementById('reportKpiRevenueSub');
+      if (revVal) revVal.textContent = `Rs. ${(reservations.total_revenue || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (resBadge) resBadge.textContent = `${reservations.total_reservations || 0} Bookings`;
+      if (revSub) revSub.textContent = `${reservations.confirmed_count || 0} Confirmed | Rs. ${(reservations.pending_payments || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Pending`;
+
+      // Room Occupancy Card
+      const occVal = document.getElementById('reportKpiOccupancy');
+      const roomsBadge = document.getElementById('reportKpiRoomsBadge');
+      const occSub = document.getElementById('reportKpiOccupancySub');
+      if (occVal) occVal.textContent = `${rooms_and_turnaround.occupancy_rate || 0}%`;
+      if (roomsBadge) roomsBadge.textContent = `${rooms_and_turnaround.total_rooms || 0} Rooms`;
+      if (occSub) occSub.textContent = `${rooms_and_turnaround.clean_rooms || 0} Clean | ${rooms_and_turnaround.dirty_or_in_progress || 0} Dirty / In-Progress`;
+
+      // Attendance & OT Card
+      const otVal = document.getElementById('reportKpiOT');
+      const staffBadge = document.getElementById('reportKpiStaffBadge');
+      const otSub = document.getElementById('reportKpiOTSub');
+      if (otVal) otVal.textContent = `${(staff_and_payroll.total_ot_hours || 0).toFixed(1)} hrs`;
+      if (staffBadge) staffBadge.textContent = `${staff_and_payroll.active_staff || 0} Active Staff`;
+      if (otSub) otSub.textContent = `${staff_and_payroll.present_count || 0} Present Logged | ${staff_and_payroll.total_staff || 0} Total Staff`;
+    }
+
+    function renderReportTables(data) {
+      const dept = document.getElementById('reportDeptFilter')?.value || 'all';
+      const secRes = document.getElementById('reportReservationsSection');
+      const secOps = document.getElementById('reportHousekeepingSection');
+      const secPay = document.getElementById('reportPayrollSection');
+
+      const tbodyRes = document.getElementById('reportReservationsTableBody');
+      const tbodyOps = document.getElementById('reportHousekeepingTableBody');
+      const tbodyPay = document.getElementById('reportPayrollTableBody');
+
+      const emptyRes = document.getElementById('reportResEmptyState');
+      const emptyOps = document.getElementById('reportOpsEmptyState');
+      const emptyPay = document.getElementById('reportPayEmptyState');
+
+      const badgeRes = document.getElementById('reportResCountBadge');
+      const badgeOps = document.getElementById('reportOpsCountBadge');
+      const badgePay = document.getElementById('reportPayCountBadge');
+
+      // Section visibility based on department filter
+      if (secRes) secRes.style.display = (dept === 'all' || dept === 'front_desk') ? 'block' : 'none';
+      if (secOps) secOps.style.display = (dept === 'all' || dept === 'housekeeping') ? 'block' : 'none';
+      if (secPay) secPay.style.display = (dept === 'all' || dept === 'finance') ? 'block' : 'none';
+
+      // 1. Render Reservations
+      if (tbodyRes) {
+        tbodyRes.innerHTML = '';
+        const resList = data.reservations || [];
+        if (badgeRes) badgeRes.textContent = `${resList.length} Records`;
+
+        if (resList.length === 0) {
+          if (emptyRes) emptyRes.style.display = 'block';
+        } else {
+          if (emptyRes) emptyRes.style.display = 'none';
+          resList.forEach(r => {
+            const tr = document.createElement('tr');
+            const amt = (parseFloat(r.total_amount) || 0).toFixed(2);
+            tr.innerHTML = `
+              <td style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-outfit);">${r.booking_id || ''}</td>
+              <td>
+                <div style="font-weight: 600; color: var(--text-white);">${r.guest_name || 'Guest'}</div>
+                <div style="font-size: 0.75rem; color: var(--text-gray);">${r.guest_email || r.phone || ''}</div>
+              </td>
+              <td><span class="role-badge" style="background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.3); color: #93c5fd;">Room ${r.room_number || r.room_no || r.room_assigned || ''}</span></td>
+              <td style="color: var(--text-gray); font-family: var(--font-outfit);">${r.check_in || r.check_in_date || ''}</td>
+              <td style="color: var(--text-gray); font-family: var(--font-outfit);">${r.check_out || r.check_out_date || ''}</td>
+              <td style="font-weight: 700; color: #10b981;">Rs. ${amt}</td>
+              <td><span class="badge badge-active">${r.status || 'Active'}</span></td>
+            `;
+            tbodyRes.appendChild(tr);
+          });
+        }
+      }
+
+      // 2. Render Housekeeping
+      if (tbodyOps) {
+        tbodyOps.innerHTML = '';
+        const opsList = data.housekeeping || [];
+        if (badgeOps) badgeOps.textContent = `${opsList.length} Rooms`;
+
+        if (opsList.length === 0) {
+          if (emptyOps) emptyOps.style.display = 'block';
+        } else {
+          if (emptyOps) emptyOps.style.display = 'none';
+          opsList.forEach(h => {
+            const tr = document.createElement('tr');
+            let statusBadge = 'badge-active';
+            const s = (h.cleaning_status || '').toLowerCase();
+            if (s === 'dirty') statusBadge = 'badge-suspended';
+            else if (s === 'in progress') statusBadge = 'badge-half-day';
+
+            tr.innerHTML = `
+              <td style="font-weight: 700; color: var(--accent-gold); font-family: var(--font-outfit);">Room ${h.room_number || h.room_no || ''}</td>
+              <td style="font-weight: 600; color: var(--text-white);">${h.assigned_staff || 'Unassigned'}</td>
+              <td><span class="badge ${statusBadge}">${h.cleaning_status || 'Available'}</span></td>
+              <td style="color: var(--text-gray); font-family: var(--font-outfit);">${h.last_cleaned || ''}</td>
+            `;
+            tbodyOps.appendChild(tr);
+          });
+        }
+      }
+
+      // 3. Render Payroll
+      if (tbodyPay) {
+        tbodyPay.innerHTML = '';
+        const payList = data.payroll || [];
+        if (badgePay) badgePay.textContent = `${payList.length} Staff Members`;
+
+        if (payList.length === 0) {
+          if (emptyPay) emptyPay.style.display = 'block';
+        } else {
+          if (emptyPay) emptyPay.style.display = 'none';
+          payList.forEach(p => {
+            const tr = document.createElement('tr');
+            const otVal = parseFloat(p.total_ot_hours || p.extra_hours || 0);
+            const otBadge = otVal > 0
+              ? `<span style="background: rgba(var(--accent-gold-rgb), 0.12); color: var(--accent-gold); border: 1px solid rgba(var(--accent-gold-rgb), 0.3); padding: 0.2rem 0.5rem; border-radius: 6px; font-weight: 700; font-size: 0.8rem;">+${otVal.toFixed(1)} hrs</span>`
+              : `<span style="color: var(--text-muted); font-size: 0.85rem;">0.0 hrs</span>`;
+
+            const basePay = (parseFloat(p.base_pay) || 0).toFixed(2);
+            const otPay = (parseFloat(p.ot_pay) || 0).toFixed(2);
+            const totalPay = (parseFloat(p.total_payout || p.total_estimated_payout) || 0).toFixed(2);
+
+            tr.innerHTML = `
+              <td>
+                <div style="font-weight: 600; color: var(--text-white);">${p.staff_name || p.username || ''}</div>
+                <div style="font-size: 0.75rem; color: var(--text-gray);">${p.staff_id || p.user_id || ''}</div>
+              </td>
+              <td><span class="role-badge">${p.designation || 'Staff'}</span></td>
+              <td style="font-weight: 600; color: var(--text-white);">${p.days_present || 0} Days ${p.half_days > 0 ? `(${p.half_days} Half)` : ''}</td>
+              <td>${otBadge}</td>
+              <td style="color: var(--text-gray);">Rs. ${basePay}</td>
+              <td style="color: var(--accent-gold);">Rs. ${otPay}</td>
+              <td style="font-weight: 700; font-size: 1rem; color: #10b981;">Rs. ${totalPay}</td>
+            `;
+            tbodyPay.appendChild(tr);
+          });
+        }
+      }
+    }
+
+    function printSystemReport() {
+      window.print();
+    }
+
+    function resetReportFilters() {
+      const s = document.getElementById('reportStartDate');
+      const e = document.getElementById('reportEndDate');
+      const d = document.getElementById('reportDeptFilter');
+      if (s) s.value = '';
+      if (e) e.value = '';
+      if (d) d.value = 'all';
+      generateSystemReport();
+    }
+
+    // Ensure loadAdminDiningOversight and switchAdminTab are globally available
+    window.loadAdminDiningOversight = function() {
+      if (window.AdminKitchenSystem && typeof window.AdminKitchenSystem.loadAll === 'function') {
+        window.AdminKitchenSystem.loadAll();
+      }
+    };
+  </script>
+</body>
+</html>

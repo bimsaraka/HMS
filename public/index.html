@@ -1,0 +1,3264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pinnacle Bay 96 - Luxury Coastal Resort & Five-Star Hotel Sanctuary in Hiriketiya, Sri Lanka.">
+  <title>Pinnacle Bay 96 | Luxury Resort & Hotel Sanctuary</title>
+  
+  <!-- Premium Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Global Admin Oversight & Public Booking Scripts -->
+  <script src="/js/admin-oversight.js"></script>
+  <script src="/js/public-booking.js"></script>
+
+  <style>
+    /* Design Tokens & CSS Custom Properties */
+    :root {
+      --primary-dark: #070a13;
+      --secondary-dark: #0f172a;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --accent-gold: #c5a880;
+      --accent-gold-hover: #b3946c;
+      --accent-gold-light: #fef3c7;
+      --accent-gold-rgb: 197, 168, 128;
+      --text-white: #f8fafc;
+      --text-gray: #94a3b8;
+      --text-muted: #64748b;
+      --border-color: rgba(197, 168, 128, 0.18);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --error-color: #ef4444;
+      --success-color: #10b981;
+      --font-outfit: 'Outfit', sans-serif;
+      --font-inter: 'Inter', sans-serif;
+      --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      --shadow-luxury: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(197, 168, 128, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-inter);
+      background-color: var(--primary-dark);
+      color: var(--text-white);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Selection & Scrollbar */
+    ::selection {
+      background-color: var(--accent-gold);
+      color: var(--primary-dark);
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--primary-dark);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+      border: 2px solid var(--primary-dark);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-gold);
+    }
+
+    /* ========================================================
+       1. STICKY TOP NAVIGATION BAR
+       ======================================================== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 4rem;
+      background: rgba(7, 10, 19, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      transition: var(--transition-smooth);
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      color: var(--text-white);
+    }
+
+    .brand-logo-svg {
+      width: 34px;
+      height: 34px;
+      fill: var(--accent-gold);
+      filter: drop-shadow(0 0 10px rgba(var(--accent-gold-rgb), 0.5));
+    }
+
+    .brand-logo-text {
+      font-family: var(--font-outfit);
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--text-white);
+      text-transform: uppercase;
+    }
+
+    .brand-logo-text span {
+      color: var(--accent-gold);
+      font-weight: 900;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      font-family: var(--font-inter);
+      font-size: 0.88rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-gray);
+      text-decoration: none;
+      transition: var(--transition-smooth);
+      position: relative;
+      padding: 0.25rem 0;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--accent-gold);
+      transition: var(--transition-smooth);
+    }
+
+    .nav-link:hover {
+      color: var(--text-white);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+
+    .btn-primary, .btn-customer-book {
+      background: linear-gradient(135deg, #c5a880 0%, #d4af37 100%);
+      color: #070a13;
+      border: none;
+      padding: 0.65rem 1.45rem;
+      border-radius: 6px;
+      font-family: var(--font-outfit);
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition-smooth);
+      box-shadow: 0 4px 15px rgba(var(--accent-gold-rgb), 0.4);
+      text-decoration: none;
+    }
+
+    .btn-primary svg, .btn-customer-book svg {
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
+    }
+
+    .btn-primary:hover, .btn-customer-book:hover {
+      background: linear-gradient(135deg, #d4af37 0%, #f3d489 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(var(--accent-gold-rgb), 0.65);
+      color: #070a13;
+    }
+
+    .btn-staff-discrete {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-gray);
+      padding: 0.6rem 0.85rem;
+      border-radius: 6px;
+      font-family: var(--font-inter);
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-staff-discrete svg {
+      width: 13px;
+      height: 13px;
+      fill: currentColor;
+    }
+
+    .btn-staff-discrete:hover {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    /* Customer Registration & Booking Modal enhancements */
+    .booking-modal-wide {
+      max-width: 620px !important;
+    }
+
+    .customer-modal {
+      max-width: 500px !important;
+    }
+
+    .booking-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .booking-grid .full-width {
+      grid-column: span 2;
+    }
+
+    /* Dynamic Credit Card Payment Section */
+    #creditCardDetails.credit-card-panel {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(197, 168, 128, 0.4);
+      border-radius: 10px;
+      padding: 1.15rem;
+      margin-top: 0.25rem;
+      box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      animation: ccSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      transition: var(--transition-smooth);
+    }
+
+    @keyframes ccSlideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .cc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.65rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .cc-header-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--accent-gold);
+    }
+
+    .cc-lock-icon {
+      width: 14px;
+      height: 14px;
+      fill: var(--accent-gold);
+    }
+
+    .cc-brand-badges {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-badge {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .card-badge-svg {
+      width: 38px;
+      height: 24px;
+      display: block;
+      border-radius: 4px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .cc-fields-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+    }
+
+    .cc-fields-grid .full-width {
+      grid-column: span 2;
+    }
+
+    .pricing-summary-card {
+      background: rgba(197, 168, 128, 0.08);
+      border: 1px dashed var(--accent-gold);
+      border-radius: 8px;
+      padding: 0.9rem 1.25rem;
+      margin: 1.25rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pricing-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .pricing-suite-name {
+      font-family: var(--font-outfit);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-white);
+    }
+
+    .pricing-duration {
+      font-size: 0.8rem;
+      color: var(--text-gray);
+    }
+
+    .pricing-amount-box {
+      text-align: right;
+    }
+
+    .pricing-total-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-gold);
+    }
+
+    .pricing-total-value {
+      font-family: var(--font-outfit);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-white);
+    }
+
+    .success-confirmation-card {
+      text-align: center;
+      padding: 1.5rem 0.5rem;
+    }
+
+    .success-icon-circle {
+      width: 64px;
+      height: 64px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+      color: #10b981;
+    }
+
+    .success-icon-circle svg {
+      width: 32px;
+      height: 32px;
+      fill: currentColor;
+    }
+
+    .success-confirmation-card h3 {
+      font-family: var(--font-outfit);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 0.5rem;
+    }
+
+    .success-confirmation-card p {
+      color: var(--text-gray);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      max-width: 460px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .ref-badge-card {
+      background: #111827;
+      border: 1px solid var(--accent-gold);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+    }
+
+    .ref-badge-card .ref-label {
+      display: block;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-gold);
+      margin-bottom: 0.25rem;
+    }
+
+    .ref-badge-card .ref-code {
+      font-family: var(--font-outfit);
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 2px;
+    }
+
+    .booking-summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      text-align: left;
+      font-size: 0.85rem;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .booking-summary-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-gray);
+    }
+
+    .booking-summary-table td:last-child {
+      text-align: right;
+      font-weight: 600;
+      color: var(--text-white);
+    }
+
+    .btn-action-group {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .btn-secondary-modal {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-white);
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-family: var(--font-outfit);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-secondary-modal:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--text-gray);
+    }
+
+    /* Success alert state */
+    .alert-container.alert-success {
+      background-color: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #10b981;
+    }
+
+
+    /* Mobile hamburger */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-white);
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    /* ========================================================
+       2. FULL-HEIGHT LUXURY HERO BANNER
+       ======================================================== */
+    .hero-section {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 8rem 2rem 5rem;
+      background: linear-gradient(
+          180deg,
+          rgba(7, 10, 19, 0.4) 0%,
+          rgba(7, 10, 19, 0.75) 70%,
+          rgba(7, 10, 19, 1) 100%
+        ),
+        url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2000&q=85') no-repeat center center;
+      background-size: cover;
+      background-attachment: fixed;
+    }
+
+    .hero-content {
+      max-width: 1000px;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(197, 168, 128, 0.12);
+      border: 1px solid rgba(197, 168, 128, 0.35);
+      color: var(--accent-gold);
+      padding: 0.45rem 1.25rem;
+      border-radius: 50px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 1.75rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-badge svg {
+      width: 13px;
+      height: 13px;
+      fill: currentColor;
+    }
+
+    .hero-title {
+      font-family: var(--font-outfit);
+      font-size: 4.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #ffffff 40%, #c5a880 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .hero-subtitle {
+      font-size: 1.2rem;
+      color: #cbd5e1;
+      max-width: 720px;
+      line-height: 1.7;
+      font-weight: 300;
+      margin-bottom: 2.25rem;
+      letter-spacing: 0.3px;
+    }
+
+    /* Interactive Quick Booking Bar */
+    .booking-bar {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem 1.75rem;
+      width: 100%;
+      max-width: 1080px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr) auto;
+      gap: 1.25rem;
+      align-items: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+      margin-bottom: 2.5rem;
+    }
+
+    .booking-field {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .booking-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-gold);
+      margin-bottom: 0.35rem;
+    }
+
+    .booking-input, .booking-select {
+      background: rgba(7, 10, 19, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+      color: var(--text-white);
+      font-family: var(--font-inter);
+      font-size: 0.9rem;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .booking-input:focus, .booking-select:focus {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 2px rgba(var(--accent-gold-rgb), 0.2);
+    }
+
+    .booking-select option {
+      background-color: var(--secondary-dark);
+      color: var(--text-white);
+    }
+
+    .btn-booking-submit {
+      background: var(--accent-gold);
+      color: var(--primary-dark);
+      border: none;
+      border-radius: 6px;
+      padding: 0.85rem 1.75rem;
+      font-family: var(--font-outfit);
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      height: 100%;
+      margin-top: auto;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-booking-submit:hover {
+      background: var(--accent-gold-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(var(--accent-gold-rgb), 0.4);
+    }
+
+    /* Scroll Down Indicator */
+    .scroll-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-gray);
+      text-decoration: none;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
+      transition: var(--transition-smooth);
+      margin-top: 1rem;
+    }
+
+    .scroll-indicator:hover {
+      color: var(--accent-gold);
+    }
+
+    .scroll-indicator svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+      animation: bounce 2s infinite ease-in-out;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(8px); }
+      60% { transform: translateY(4px); }
+    }
+
+    /* ========================================================
+       SECTION COMMON STYLES
+       ======================================================== */
+    .section-wrapper {
+      padding: 7rem 4rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4.5rem;
+    }
+
+    .section-tag {
+      font-family: var(--font-outfit);
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .section-title {
+      font-family: var(--font-outfit);
+      font-size: 2.85rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-white);
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      color: var(--text-gray);
+      font-size: 1.05rem;
+      max-width: 620px;
+      margin: 0 auto;
+      font-weight: 300;
+    }
+
+    /* ========================================================
+       3. ACCOMMODATION / SUITES SHOWCASE
+       ======================================================== */
+    .suites-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .suite-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition-smooth);
+      box-shadow: var(--shadow-luxury);
+      position: relative;
+    }
+
+    .suite-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--accent-gold);
+      box-shadow: 0 30px 60px -15px rgba(0,0,0,0.7), 0 0 30px rgba(197, 168, 128, 0.15);
+    }
+
+    .suite-img-container {
+      position: relative;
+      height: 260px;
+      overflow: hidden;
+    }
+
+    .suite-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .suite-card:hover .suite-img {
+      transform: scale(1.06);
+    }
+
+    .suite-price-badge {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      background: rgba(7, 10, 19, 0.9);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--accent-gold);
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      font-family: var(--font-outfit);
+      font-weight: 700;
+      color: var(--accent-gold);
+      font-size: 1.15rem;
+    }
+
+    .suite-price-badge span {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--text-gray);
+    }
+
+    .suite-body {
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .suite-title {
+      font-family: var(--font-outfit);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+      color: var(--text-white);
+    }
+
+    .suite-description {
+      color: var(--text-gray);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+    }
+
+    .suite-specs {
+      display: flex;
+      gap: 1.25rem;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 0.85rem;
+      color: var(--text-gray);
+    }
+
+    .suite-spec-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .suite-spec-item svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--accent-gold);
+    }
+
+    .suite-amenity-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .amenity-tag {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-subtle);
+      color: #cbd5e1;
+      padding: 0.25rem 0.65rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .btn-suite-action {
+      margin-top: auto;
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 0.85rem;
+      border-radius: 6px;
+      font-family: var(--font-outfit);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-suite-action:hover {
+      background: var(--accent-gold);
+      color: var(--primary-dark);
+      box-shadow: 0 4px 15px rgba(var(--accent-gold-rgb), 0.3);
+    }
+
+    /* ========================================================
+       4. WORLD-CLASS AMENITIES & EXPERIENCES
+       ======================================================== */
+    .amenities-section {
+      background-color: var(--secondary-dark);
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .amenities-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.75rem;
+    }
+
+    .amenity-card {
+      background: var(--primary-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition-smooth);
+    }
+
+    .amenity-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent-gold);
+      box-shadow: var(--shadow-luxury);
+    }
+
+    .amenity-img-box {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .amenity-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .amenity-card:hover .amenity-img {
+      transform: scale(1.08);
+    }
+
+    .amenity-content {
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .amenity-card-title {
+      font-family: var(--font-outfit);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+
+    .amenity-card-desc {
+      color: var(--text-gray);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    /* ========================================================
+       5. GUEST TESTIMONIALS / SOCIAL PROOF
+       ======================================================== */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .testimonial-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow-luxury);
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+
+    .testimonial-card:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-4px);
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 0.25rem;
+      color: #fbbf24;
+      margin-bottom: 1.25rem;
+    }
+
+    .star-rating svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .testimonial-quote {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: #e2e8f0;
+      font-weight: 300;
+      font-style: italic;
+      margin-bottom: 2rem;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 1.25rem;
+    }
+
+    .author-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-gold) 0%, #78350f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-outfit);
+      font-weight: 800;
+      color: #ffffff;
+      font-size: 1rem;
+    }
+
+    .author-details h4 {
+      font-family: var(--font-outfit);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+
+    .author-details p {
+      font-size: 0.8rem;
+      color: var(--accent-gold);
+    }
+
+    /* ========================================================
+       6. COMPLETE LUXURY FOOTER & STAFF ACCESS
+       ======================================================== */
+    footer {
+      background-color: #04070d;
+      border-top: 1px solid var(--border-color);
+      padding: 6rem 4rem 2rem;
+      margin-top: auto;
+    }
+
+    .footer-main {
+      max-width: 1400px;
+      margin: 0 auto 4rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 4rem;
+    }
+
+    .footer-brand-col p {
+      color: var(--text-gray);
+      font-size: 0.92rem;
+      line-height: 1.7;
+      margin-top: 1.25rem;
+      margin-bottom: 1.75rem;
+      font-weight: 300;
+      max-width: 340px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      color: #cbd5e1;
+      font-size: 0.88rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .contact-item svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--accent-gold);
+      flex-shrink: 0;
+    }
+
+    .footer-col h4 {
+      font-family: var(--font-outfit);
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-gold);
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .footer-link {
+      color: var(--text-gray);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: var(--transition-smooth);
+    }
+
+    .footer-link:hover {
+      color: var(--text-white);
+      transform: translateX(4px);
+    }
+
+    .newsletter-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .newsletter-input {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      color: var(--text-white);
+      font-family: var(--font-inter);
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .newsletter-input:focus {
+      border-color: var(--accent-gold);
+    }
+
+    .btn-newsletter {
+      background: var(--accent-gold);
+      color: var(--primary-dark);
+      border: none;
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-family: var(--font-outfit);
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-newsletter:hover {
+      background: var(--accent-gold-hover);
+    }
+
+    /* Dedicated Employee Access Banner in Footer */
+    .staff-access-box {
+      max-width: 1400px;
+      margin: 0 auto 3rem;
+      background: linear-gradient(90deg, #111827 0%, #0a0f1d 100%);
+      border: 1px solid var(--accent-gold);
+      border-radius: 10px;
+      padding: 1.5rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .staff-access-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .staff-access-icon {
+      width: 42px;
+      height: 42px;
+      background: rgba(197, 168, 128, 0.15);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-gold);
+    }
+
+    .staff-access-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    .staff-access-text h4 {
+      font-family: var(--font-outfit);
+      font-size: 1.1rem;
+      color: var(--text-white);
+      font-weight: 700;
+    }
+
+    .staff-access-text p {
+      font-size: 0.825rem;
+      color: var(--text-gray);
+    }
+
+    .staff-access-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-staff-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-gray);
+      padding: 0.45rem 0.9rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-staff-pill:hover {
+      background: rgba(197, 168, 128, 0.15);
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+    }
+
+    .footer-bottom {
+      max-width: 1400px;
+      margin: 0 auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      padding: 0.35rem 0.85rem;
+      border-radius: 20px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    /* ========================================================
+       7. STAFF LOGIN MODAL DIALOG
+       ======================================================== */
+    dialog.login-modal {
+      margin: auto;
+      padding: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      max-width: 480px;
+      width: 90%;
+      z-index: 10000;
+    }
+
+    dialog.login-modal::backdrop {
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .modal-card {
+      background: #090d16;
+      border: 1px solid var(--accent-gold);
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(197, 168, 128, 0.15);
+      position: relative;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-gray);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .modal-close-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border-color: #ef4444;
+    }
+
+    .modal-close-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .modal-header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .modal-header-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(197, 168, 128, 0.12);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      color: var(--accent-gold);
+    }
+
+    .modal-header-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    .modal-header h2 {
+      font-family: var(--font-outfit);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 0.35rem;
+    }
+
+    .modal-header p {
+      color: var(--text-gray);
+      font-size: 0.88rem;
+    }
+
+    /* Alert Box */
+    .alert-container {
+      display: none;
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+      color: var(--error-color);
+      font-size: 0.88rem;
+      align-items: center;
+      gap: 0.65rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .alert-icon {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      flex-shrink: 0;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-gray);
+      margin-bottom: 0.4rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      width: 18px;
+      height: 18px;
+      fill: var(--text-muted);
+      pointer-events: none;
+      transition: var(--transition-smooth);
+    }
+
+    .form-input, .form-control, .form-select {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.6rem;
+      background-color: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 8px;
+      color: var(--text-white);
+      font-family: var(--font-inter);
+      font-size: 0.92rem;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .form-input:focus, .form-control:focus, .form-select:focus {
+      border-color: var(--accent-gold);
+      background-color: rgba(17, 24, 39, 0.8);
+      box-shadow: 0 0 0 3px rgba(var(--accent-gold-rgb), 0.15);
+    }
+
+    .form-input:focus ~ .input-icon, .form-control:focus ~ .input-icon, .form-select:focus ~ .input-icon {
+      fill: var(--accent-gold);
+    }
+
+    .form-input.is-invalid, .form-control.is-invalid, .form-select.is-invalid {
+      border-color: var(--error-color) !important;
+      background-color: rgba(239, 68, 68, 0.06) !important;
+    }
+
+    .form-input.is-invalid ~ .input-icon {
+      fill: var(--error-color) !important;
+    }
+
+    .input-error-msg {
+      display: none;
+      color: var(--error-color);
+      font-size: 0.825rem;
+      margin-top: 0.45rem;
+      font-weight: 500;
+      align-items: center;
+      gap: 0.4rem;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 0.85rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+    }
+
+    .password-toggle:hover {
+      color: var(--text-white);
+    }
+
+    .password-toggle svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.95rem;
+      background-color: var(--accent-gold);
+      border: none;
+      border-radius: 8px;
+      color: var(--primary-dark);
+      font-family: var(--font-outfit);
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-submit:hover {
+      background-color: var(--accent-gold-hover);
+      box-shadow: 0 4px 15px rgba(var(--accent-gold-rgb), 0.35);
+      transform: translateY(-2px);
+    }
+
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(9, 13, 22, 0.25);
+      border-radius: 50%;
+      border-top-color: var(--primary-dark);
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* Quick Role Access inside modal */
+    .modal-quick-roles {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .quick-roles-title {
+      font-family: var(--font-outfit);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-gray);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.85rem;
+      text-align: center;
+    }
+
+    .quick-roles-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .quick-role-link {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 6px;
+      padding: 0.55rem;
+      color: var(--text-gray);
+      font-size: 0.78rem;
+      text-decoration: none;
+      text-align: center;
+      font-weight: 600;
+      transition: var(--transition-smooth);
+    }
+
+    .quick-role-link:hover {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========================================================
+       RESPONSIVE MEDIA QUERIES
+       ======================================================== */
+    @media (max-width: 1200px) {
+      .suites-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .amenities-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .footer-main {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3rem;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .navbar {
+        padding: 1rem 1.5rem;
+      }
+      .nav-links {
+        display: none;
+      }
+      .section-wrapper {
+        padding: 5rem 1.5rem;
+      }
+      .hero-title {
+        font-size: 3rem;
+      }
+      .booking-bar {
+        grid-template-columns: 1fr;
+      }
+      .suites-grid, .amenities-grid, .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-main {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. STICKY TOP NAVIGATION BAR -->
+  <header class="navbar">
+    <a href="#" class="brand-logo">
+      <svg class="brand-logo-svg" viewBox="0 0 24 24">
+        <path d="M12 2L2 22h20L12 2zm0 3.99L18.47 18H5.53L12 5.99zM11 10h2v4h-2zm0 5h2v2h-2z"/>
+      </svg>
+      <div class="brand-logo-text">PINNACLE BAY <span>96</span></div>
+    </a>
+    
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#suites" class="nav-link">Suites</a></li>
+        <li><a href="#experiences" class="nav-link">Experiences</a></li>
+        <li><a href="#dining" class="nav-link">Dining</a></li>
+        <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="nav-actions">
+      <!-- 1. Primary CTA Button: Book Now -->
+      <button type="button" id="btnOpenBookingModal" class="btn-primary" onclick="openGuestBookingModal()">
+        <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/></svg>
+        Book Now
+      </button>
+
+      <!-- 2. Staff Portal Access -->
+      <a href="login.html" class="btn-staff-discrete" id="btnStaffPortal" onclick="openStaffModal(event)" title="Staff / Employee Portal Access">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        Staff
+      </a>
+    </div>
+  </header>
+
+  <!-- 2. FULL-HEIGHT LUXURY HERO SECTION -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        Five-Star Luxury Resort & Retreat — Hiriketiya Bay
+      </div>
+      <h1 class="hero-title">Sophisticated Stays. World-Class Hospitality.</h1>
+      <p class="hero-subtitle">
+        Immerse yourself in coastal elegance, Michelin-grade gastronomy, tailored wellness therapies, and panoramic ocean grandeur.
+      </p>
+
+      <!-- Smooth Scroll Indicator -->
+      <a href="#suites" class="scroll-indicator">
+        <span>Explore Residences</span>
+        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- 3. ACCOMMODATION / SUITES SHOWCASE -->
+  <section class="section-wrapper" id="suites">
+    <div class="section-header">
+      <span class="section-tag">Exquisite Living</span>
+      <h2 class="section-title">Curated Suites & Private Villas</h2>
+      <p class="section-desc">Designed with organic teak, floor-to-ceiling panoramic glass, and private terraces overlooking the turquoise bay.</p>
+    </div>
+
+    <div class="suites-grid">
+      <!-- Card 1: Single Room -->
+      <div class="suite-card">
+        <div class="suite-img-container">
+          <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1200&q=80" alt="Single Room" class="suite-img" loading="lazy">
+        </div>
+        <div class="suite-body">
+          <h3 class="suite-title">Single Room</h3>
+          <p class="suite-description">Comfortable and modern room tailored for solo travelers, featuring dedicated workspace and high-speed Wi-Fi.</p>
+          <div class="suite-specs">
+            <div class="suite-spec-item">
+              <svg viewBox="0 0 24 24"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+              1 Single Bed
+            </div>
+            <div class="suite-spec-item">
+              <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+              1 Guest
+            </div>
+            <div class="suite-spec-item">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              250 sq ft
+            </div>
+          </div>
+          <div class="suite-amenity-tags">
+            <span class="amenity-tag">💼 Dedicated Workspace</span>
+            <span class="amenity-tag">📶 High-Speed WiFi</span>
+            <span class="amenity-tag">☕ Coffee Maker</span>
+            <span class="amenity-tag">🚿 En-suite Bath</span>
+          </div>
+          <button type="button" class="btn-suite-action" onclick="openCustomerBookingModal('Single Room')">
+            Book Single Room
+            <svg style="width:14px;height:14px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 2: Couple Room -->
+      <div class="suite-card">
+        <div class="suite-img-container">
+          <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80" alt="Couple Room" class="suite-img" loading="lazy">
+        </div>
+        <div class="suite-body">
+          <h3 class="suite-title">Couple Room</h3>
+          <p class="suite-description">Intimate luxury suite crafted for couples, with panoramic ocean views, private balcony, and marble bathroom.</p>
+          <div class="suite-specs">
+            <div class="suite-spec-item">
+              <svg viewBox="0 0 24 24"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+              1 King/Queen Bed
+            </div>
+            <div class="suite-spec-item">
+              <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+              2 Guests
+            </div>
+            <div class="suite-spec-item">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              420 sq ft
+            </div>
+          </div>
+          <div class="suite-amenity-tags">
+            <span class="amenity-tag">🌅 Scenic Balcony</span>
+            <span class="amenity-tag">📶 High-Speed WiFi</span>
+            <span class="amenity-tag">🍸 Private Bar</span>
+            <span class="amenity-tag">🚿 Luxury Rain Shower</span>
+          </div>
+          <button type="button" class="btn-suite-action" onclick="openCustomerBookingModal('Couple Room')">
+            Book Couple Room
+            <svg style="width:14px;height:14px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Card 3: Family Room -->
+      <div class="suite-card">
+        <div class="suite-img-container">
+          <img src="https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?auto=format&fit=crop&w=1200&q=80" alt="Family Room" class="suite-img" loading="lazy">
+        </div>
+        <div class="suite-body">
+          <h3 class="suite-title">Family Room</h3>
+          <p class="suite-description">Spacious multi-bed room ideal for family stays, offering ample space, luxury amenities, and comfort.</p>
+          <div class="suite-specs">
+            <div class="suite-spec-item">
+              <svg viewBox="0 0 24 24"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+              King Bed + Twin Bed
+            </div>
+            <div class="suite-spec-item">
+              <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+              Up to 4 Guests
+            </div>
+            <div class="suite-spec-item">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+              650 sq ft
+            </div>
+          </div>
+          <div class="suite-amenity-tags">
+            <span class="amenity-tag">👨‍👩‍👧‍👦 Family Living Space</span>
+            <span class="amenity-tag">📶 High-Speed WiFi</span>
+            <span class="amenity-tag">📺 Smart Entertainment</span>
+            <span class="amenity-tag">🏊 Pool & Garden Access</span>
+          </div>
+          <button type="button" class="btn-suite-action" onclick="openCustomerBookingModal('Family Room')">
+            Book Family Room
+            <svg style="width:14px;height:14px;fill:currentColor" viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. WORLD-CLASS AMENITIES & EXPERIENCES -->
+  <section class="amenities-section" id="experiences">
+    <div class="section-wrapper">
+      <div class="section-header">
+        <span class="section-tag" id="dining">Resort Indulgences</span>
+        <h2 class="section-title">World-Class Amenities & Bespoke Experiences</h2>
+        <p class="section-desc">From cliffside infinity swimming to Michelin-inspired seafood dining, every moment is crafted to transcend ordinary escapes.</p>
+      </div>
+
+      <div class="amenities-grid">
+        <!-- Amenity 1 -->
+        <div class="amenity-card">
+          <div class="amenity-img-box">
+            <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80" alt="Azure Infinity Pool" class="amenity-img" loading="lazy">
+          </div>
+          <div class="amenity-content">
+            <h3 class="amenity-card-title">Azure Infinity Pool & Sunset Lounge</h3>
+            <p class="amenity-card-desc">Temperature-controlled cliffside infinity pool blending seamlessly with the Indian Ocean horizon, serving artisan cocktails and sunset tapas.</p>
+          </div>
+        </div>
+
+        <!-- Amenity 2 -->
+        <div class="amenity-card">
+          <div class="amenity-img-box">
+            <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80" alt="Ocean Pearl Fine Dining" class="amenity-img" loading="lazy">
+          </div>
+          <div class="amenity-content">
+            <h3 class="amenity-card-title">Ocean Pearl Fine Dining & Seafood Bistro</h3>
+            <p class="amenity-card-desc">Gastronomic ocean-to-table cuisine prepared by executive master chefs using daily fresh catches, paired with rare international wine vintages.</p>
+          </div>
+        </div>
+
+        <!-- Amenity 3 -->
+        <div class="amenity-card">
+          <div class="amenity-img-box">
+            <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80" alt="Ayurvedic Wellness Spa" class="amenity-img" loading="lazy">
+          </div>
+          <div class="amenity-content">
+            <h3 class="amenity-card-title">Ayurvedic & Modern Wellness Spa</h3>
+            <p class="amenity-card-desc">Ancient Ayurvedic restoration rituals, steam saunas, herbal wraps, and holistic body therapy suites curated for complete mind-body rejuvenation.</p>
+          </div>
+        </div>
+
+        <!-- Amenity 4 -->
+        <div class="amenity-card">
+          <div class="amenity-img-box">
+            <img src="https://images.unsplash.com/photo-1569263979104-865ab7cd8d17?auto=format&fit=crop&w=800&q=80" alt="Private Yacht Charters" class="amenity-img" loading="lazy">
+          </div>
+          <div class="amenity-content">
+            <h3 class="amenity-card-title">Private Yacht Charters & Water Sports</h3>
+            <p class="amenity-card-desc">Exclusive private catamaran expeditions, deep-sea game fishing, coral reef snorkeling, and coastal dolphin watching along the southern shoreline.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. GUEST TESTIMONIALS / SOCIAL PROOF -->
+  <section class="section-wrapper" id="testimonials">
+    <div class="section-header">
+      <span class="section-tag">Guest Voices</span>
+      <h2 class="section-title">Cherished Moments & Unforgettable Stays</h2>
+      <p class="section-desc">Discover how travelers from across the globe describe their time in our coastal paradise.</p>
+    </div>
+
+    <div class="testimonials-grid">
+      <!-- Testimonial 1 -->
+      <div class="testimonial-card">
+        <div class="star-rating">
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        </div>
+        <p class="testimonial-quote">
+          "The Oceanview Presidential Suite was beyond breathtaking. Waking up to the sunrise over Hiriketiya Bay with private breakfast on our terrace made our anniversary completely unforgettable."
+        </p>
+        <div class="testimonial-author">
+          <div class="author-avatar">EV</div>
+          <div class="author-details">
+            <h4>Eleanor Vance</h4>
+            <p>London, UK • Presidential Suite</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 2 -->
+      <div class="testimonial-card">
+        <div class="star-rating">
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        </div>
+        <p class="testimonial-quote">
+          "The private plunge pool in the Royal Garden Villa and the seafood dining at Ocean Pearl are truly Michelin-standard. The level of hospitality and attention to detail from the staff was extraordinary."
+        </p>
+        <div class="testimonial-author">
+          <div class="author-avatar">AP</div>
+          <div class="author-details">
+            <h4>Arthur Pendragon</h4>
+            <p>Sydney, Australia • Royal Villa</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonial 3 -->
+      <div class="testimonial-card">
+        <div class="star-rating">
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        </div>
+        <p class="testimonial-quote">
+          "From the private yacht charter to the Ayurvedic spa treatments, Pinnacle Bay exceeded all our expectations. Seamless check-in, spotless housekeeping, and pure tranquility."
+        </p>
+        <div class="testimonial-author">
+          <div class="author-avatar">CO</div>
+          <div class="author-details">
+            <h4>Clara Oswald</h4>
+            <p>New York, USA • Panorama Room</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. COMPLETE LUXURY FOOTER & STAFF ACCESS -->
+  <footer id="contact">
+    <!-- Staff Access Strip -->
+    <div class="staff-access-box">
+      <div class="staff-access-info">
+        <div class="staff-access-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+        </div>
+        <div class="staff-access-text">
+          <h4>Employee & Staff Governance Hub</h4>
+          <p>Authorized personnel access for front desk, housekeeping schedules, finance ledger, and system administration.</p>
+        </div>
+      </div>
+      <div class="staff-access-actions">
+        <button type="button" class="btn-portal-trigger" onclick="openStaffModal()">
+          Staff Portal Sign In
+        </button>
+        <a href="admin-dashboard.html" class="btn-staff-pill">Admin</a>
+        <a href="reception-dashboard.html" class="btn-staff-pill">Reception</a>
+        <a href="ops-dashboard.html" class="btn-staff-pill">Operations</a>
+        <a href="finance-dashboard.html" class="btn-staff-pill">Finance</a>
+      </div>
+    </div>
+
+    <div class="footer-main">
+      <div class="footer-brand-col">
+        <a href="#" class="brand-logo">
+          <svg class="brand-logo-svg" viewBox="0 0 24 24">
+            <path d="M12 2L2 22h20L12 2zm0 3.99L18.47 18H5.53L12 5.99zM11 10h2v4h-2zm0 5h2v2h-2z"/>
+          </svg>
+          <div class="brand-logo-text">PINNACLE BAY <span>96</span></div>
+        </a>
+        <p>A Five-Star Luxury Sanctuary overlooking the Indian Ocean in Hiriketiya, Sri Lanka. Where nature meets architectural splendor.</p>
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          07th Lane, Hiriketiya Bay, Dickwella, Sri Lanka
+        </div>
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          +94 41 222 9696 / +94 77 123 4567
+        </div>
+        <div class="contact-item">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          reservations@pinnaclebay.com
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Residences</h4>
+        <ul class="footer-links-list">
+          <li><a href="#suites" class="footer-link">Presidential Suite</a></li>
+          <li><a href="#suites" class="footer-link">Royal Garden Villa</a></li>
+          <li><a href="#suites" class="footer-link">Deluxe Panorama</a></li>
+          <li><a href="#suites" class="footer-link">Private Penthouse</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Experiences</h4>
+        <ul class="footer-links-list">
+          <li><a href="#experiences" class="footer-link">Infinity Pool & Lounge</a></li>
+          <li><a href="#dining" class="footer-link">Ocean Pearl Dining</a></li>
+          <li><a href="#experiences" class="footer-link">Ayurvedic Spa</a></li>
+          <li><a href="#experiences" class="footer-link">Yacht Charters</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Private Newsletter</h4>
+        <p style="font-size:0.85rem; color:var(--text-gray); margin-bottom:1rem;">Receive seasonal private privileges, retreat announcements, and curated offers.</p>
+        <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+          <input type="email" class="newsletter-input" placeholder="Your email address" required>
+          <button type="submit" class="btn-newsletter">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2026 Pinnacle Bay 96 Resorts & Spa. All Rights Reserved.</div>
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        <span>System Status: Operational (MS SQL Active)</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 7. STAFF PORTAL LOGIN MODAL DIALOG -->
+  <dialog id="staffModal" class="login-modal" closedby="any" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <button type="button" class="modal-close-btn" onclick="closeStaffModal()" aria-label="Close modal">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+
+      <div class="modal-header">
+        <div class="modal-header-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2zm0 3.99L18.47 18H5.53L12 5.99zM11 10h2v4h-2zm0 5h2v2h-2z"/></svg>
+        </div>
+        <h2 id="modalTitle">Staff Portal Sign In</h2>
+        <p>Enter your system credentials to access department hubs</p>
+      </div>
+
+      <!-- Alert Notification Container -->
+      <div id="alertBox" class="alert-container">
+        <svg class="alert-icon" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        <span id="alertMessage" class="alert-text"></span>
+      </div>
+
+      <!-- Main Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <!-- Email Input -->
+        <div class="form-group">
+          <label class="form-label" for="username">Username or Email</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            <input 
+              type="email" 
+              id="username" 
+              name="username" 
+              class="form-input" 
+              placeholder="you@pinnaclebay.com" 
+              required
+              autocomplete="email"
+            >
+          </div>
+        </div>
+
+        <!-- Password Input -->
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24">
+              <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+            </svg>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="form-input password-input" 
+              placeholder="••••••••••••" 
+              required
+              autocomplete="current-password"
+            >
+            <!-- Visibility Toggle -->
+            <button type="button" id="passwordToggle" class="password-toggle" aria-label="Toggle Password Visibility">
+              <svg id="eyeIconOpen" viewBox="0 0 24 24">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+              </svg>
+              <svg id="eyeIconClose" viewBox="0 0 24 24" style="display: none;">
+                <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.82l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.74-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.17c0-1.66-1.34-3-3-3l-.17.02z"/>
+              </svg>
+            </button>
+          </div>
+          <!-- Inline Error message beneath password input -->
+          <div id="passwordError" class="input-error-msg">
+            <svg style="width: 14px; height: 14px; fill: currentColor; flex-shrink: 0;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            <span id="passwordErrorText">Invalid email or password</span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit" id="btnSubmit">
+          <span id="btnText">Sign In to Dashboard</span>
+          <div id="btnSpinner" class="spinner"></div>
+        </button>
+      </form>
+
+      <!-- Quick Role Links inside modal -->
+      <div class="modal-quick-roles">
+        <div class="quick-roles-title">Direct Department Access</div>
+        <div class="quick-roles-grid">
+          <a href="admin-dashboard.html" class="quick-role-link">Admin Hub</a>
+          <a href="reception-dashboard.html" class="quick-role-link">Reception Desk</a>
+          <a href="ops-dashboard.html" class="quick-role-link">Operations / Ops</a>
+          <a href="finance-dashboard.html" class="quick-role-link">Finance & Billing</a>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+
+  <!-- ========================================================
+       9. ONLINE ROOM RESERVATION MODAL ("Book Now")
+       ======================================================== -->
+  <!-- ========================================================
+       9. GUEST RESERVATION MODAL ("Book Your Stay" - #guestBookingModal)
+       ======================================================== -->
+  <dialog id="guestBookingModal" class="login-modal booking-modal-wide">
+    <div class="modal-card">
+      <button type="button" class="modal-close-btn" id="btnCloseGuestBooking" onclick="closeGuestBookingModal()" aria-label="Close Modal">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+
+      <!-- Booking Form View -->
+      <div id="guestBookingFormContainer">
+        <div class="modal-header">
+          <div class="modal-header-icon">
+            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2zm-7 5h5v5h-5z"/></svg>
+          </div>
+          <h2>Book Your Stay</h2>
+          <p>Select your room and dates to reserve your luxury stay.</p>
+        </div>
+
+        <!-- Alert Box -->
+        <div id="guestBookingAlertBox" class="alert-container">
+          <svg style="width: 18px; height: 18px; fill: currentColor; flex-shrink: 0;" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+          <span id="guestBookingAlertMessage">Error processing reservation.</span>
+        </div>
+
+        <form id="guestBookingForm" onsubmit="handleGuestBookingSubmit(event)">
+          <div class="booking-grid">
+            <!-- Room Type dropdown -->
+            <div class="form-group full-width">
+              <label class="form-label" for="guestRoomType">Room Type</label>
+              <div class="input-wrapper">
+                <select id="guestRoomType" name="room_type" class="form-input booking-select" onchange="updateGuestBookingPricing()" required>
+                  <option value="Single Room" data-price="15000">Single Room (Rs. 15,000/night)</option>
+                  <option value="Couple Room" data-price="25000" selected>Couple Room (Rs. 25,000/night)</option>
+                  <option value="Family Room" data-price="45000">Family Room (Rs. 45,000/night)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Meal Package / Board Type dropdown -->
+            <div class="form-group full-width">
+              <label class="form-label" for="bookMealPackage">Meal Package / Board Type</label>
+              <div class="input-wrapper">
+                <select id="bookMealPackage" name="meal_package" class="form-input booking-select" onchange="updateGuestBookingPricing()" required>
+                  <option value="Room Only" data-price="0" selected>Room Only (RO) - No Meals (Rs. 0)</option>
+                  <option value="Bed & Breakfast" data-price="3500">Bed & Breakfast (BB) (+Rs. 3,500/night)</option>
+                  <option value="Half Board" data-price="5500">Half Board (HB) - Breakfast & Dinner (+Rs. 5,500/night)</option>
+                  <option value="Full Board" data-price="8000">Full Board (FB) - All 3 Meals (+Rs. 8,000/night)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Check-In Date -->
+            <div class="form-group">
+              <label class="form-label" for="guestCheckInDate">Check-in Date</label>
+              <div class="input-wrapper">
+                <input type="date" id="guestCheckInDate" name="check_in_date" class="form-input" onchange="handleGuestCheckInChange()" oninput="this.style.border=''" required>
+              </div>
+            </div>
+
+            <!-- Check-Out Date -->
+            <div class="form-group">
+              <label class="form-label" for="guestCheckOutDate">Check-out Date</label>
+              <div class="input-wrapper">
+                <input type="date" id="guestCheckOutDate" name="check_out_date" class="form-input" onchange="handleGuestCheckOutChange()" oninput="this.style.border=''" required>
+              </div>
+            </div>
+
+            <!-- Guest Full Name -->
+            <div class="form-group full-width">
+              <label class="form-label" for="guestFullName">Guest Full Name</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <input type="text" id="guestFullName" name="guest_name" class="form-input" placeholder="e.g. Eleanor Vance" oninput="this.style.border=''" required autocomplete="name">
+              </div>
+            </div>
+
+            <!-- Guest Classification Dropdown -->
+            <div class="form-group">
+              <label class="form-label" for="guestType">GUEST TYPE</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                <select id="guestType" class="form-select form-input booking-select" name="guest_type" onchange="handleGuestTypeChange()" required>
+                  <option value="Local" selected>Local Guest (Sri Lankan)</option>
+                  <option value="Foreign">Foreign Guest</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Dynamic Identity Input -->
+            <div class="form-group">
+              <label class="form-label" id="identityLabel" for="guestIdentity">NIC NUMBER</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/></svg>
+                <input type="text" id="guestIdentity" name="identity_number" class="form-control form-input" 
+                       placeholder="e.g. 200012345678 or 982144512V" oninput="this.style.border=''" required>
+              </div>
+            </div>
+
+            <!-- Email Address -->
+            <div class="form-group">
+              <label class="form-label" for="guestEmailAddress">Email Address</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                <input type="email" id="guestEmailAddress" name="email" class="form-input" placeholder="e.g. eleanor@example.com" oninput="this.style.border=''" required autocomplete="email">
+              </div>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-group">
+              <label class="form-label" for="guestPhoneNumber">Phone Number</label>
+              <div class="input-wrapper">
+                <svg class="input-icon" viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                <input type="tel" id="guestPhoneNumber" name="phone" class="form-input" placeholder="e.g. 0771234567 or +94771234567" oninput="this.style.border=''" required autocomplete="tel">
+              </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="form-group full-width">
+              <label class="form-label" for="guestPaymentMethod">Payment Method</label>
+              <div class="input-wrapper">
+                <select id="guestPaymentMethod" name="payment_method" class="form-input booking-select" onchange="handlePaymentMethodChange()" required>
+                  <option value="Pay at Reception" selected>Pay at Reception</option>
+                  <option value="Credit Card (Pay Now)">Credit Card (Pay Now)</option>
+                  <option value="Direct Bank Transfer">Direct Bank Transfer</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Dynamic Credit Card Payment Section (#creditCardDetails) -->
+            <div id="creditCardDetails" class="credit-card-panel full-width" style="display: none;">
+              <div class="cc-header">
+                <div class="cc-header-title">
+                  <svg class="cc-lock-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                  <span>Encrypted 256-Bit Card Checkout</span>
+                </div>
+                <!-- Accepted Card Brand Badges: Visa & Mastercard -->
+                <div class="cc-brand-badges" aria-label="Accepted Card Brands">
+                  <div class="card-badge" title="Visa">
+                    <svg viewBox="0 0 48 30" class="card-badge-svg" aria-label="Visa">
+                      <rect width="48" height="30" rx="4" fill="#0f172a" stroke="rgba(197,168,128,0.35)" stroke-width="1"/>
+                      <path d="M18.8 19.5L20.9 6.5H24L21.9 19.5H18.8ZM33.8 6.8C33.2 6.6 32.2 6.4 31 6.4C27.8 6.4 25.5 8.1 25.5 10.5C25.5 12.3 27.2 13.3 28.4 13.9C29.6 14.5 30.1 14.9 30.1 15.6C30.1 16.5 29 17 27.8 17C26.6 17 25.8 16.7 24.9 16.3L24.4 16L23.9 19C24.8 19.4 26.2 19.8 27.7 19.8C31.2 19.8 33.5 18.1 33.5 15.5C33.5 13.4 32.2 12.5 30.6 11.7C29.6 11.2 28.9 10.8 28.9 10.1C28.9 9.5 29.7 8.9 31 8.9C32 8.9 32.8 9.1 33.5 9.4L33.8 9.6L34.2 6.8M40.5 6.5H38.1C37.3 6.5 36.8 6.7 36.5 7.4L31.3 19.5H34.6L35.2 17.6H39.1L39.5 19.5H42.4L40.5 6.5ZM36 15.3L37.6 10.9C37.6 10.9 38 9.9 38.2 9.4L38.4 10.4C38.6 11.3 38.9 12.8 39.1 13.6H36V15.3M16.3 6.5L13.3 15.4L12.9 13.7C12.3 11.8 10.5 9.8 8.5 8.8L11.3 19.5H14.6L19.4 6.5H16.3Z" fill="#1434CB"/>
+                    </svg>
+                  </div>
+                  <div class="card-badge" title="Mastercard">
+                    <svg viewBox="0 0 48 30" class="card-badge-svg" aria-label="Mastercard">
+                      <rect width="48" height="30" rx="4" fill="#0f172a" stroke="rgba(197,168,128,0.35)" stroke-width="1"/>
+                      <circle cx="20" cy="15" r="7.5" fill="#EB001B"/>
+                      <circle cx="28" cy="15" r="7.5" fill="#F79E1B" fill-opacity="0.88"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card Input Fields -->
+              <div class="cc-fields-grid">
+                <!-- Cardholder Name -->
+                <div class="form-group full-width">
+                  <label class="form-label" for="ccCardholderName">Cardholder Name</label>
+                  <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    <input type="text" id="ccCardholderName" name="cardholder_name" class="form-input cc-input" placeholder="e.g. ELEANOR VANCE" autocomplete="cc-name" oninput="this.style.border=''">
+                  </div>
+                </div>
+
+                <!-- Card Number (16-digit format with spacing) -->
+                <div class="form-group full-width">
+                  <label class="form-label" for="ccCardNumber">Card Number</label>
+                  <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                    <input type="text" id="ccCardNumber" name="card_number" class="form-input cc-input" placeholder="4532 •••• •••• 4242" maxlength="19" autocomplete="cc-number" oninput="handleCardNumberFormat(this); this.style.border=''">
+                  </div>
+                </div>
+
+                <!-- Expiry Date (MM/YY format) -->
+                <div class="form-group">
+                  <label class="form-label" for="ccExpiryDate">Expiry Date</label>
+                  <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+                    <input type="text" id="ccExpiryDate" name="expiry_date" class="form-input cc-input" placeholder="MM/YY" maxlength="5" autocomplete="cc-exp" oninput="handleExpiryDateFormat(this); this.style.border=''">
+                  </div>
+                </div>
+
+                <!-- CVC / CVV (3-digit masked password input) -->
+                <div class="form-group">
+                  <label class="form-label" for="ccCvc">CVC / CVV</label>
+                  <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                    <input type="password" id="ccCvc" name="cvv" class="form-input cc-input" placeholder="•••" maxlength="4" autocomplete="cc-csc" oninput="handleCvcFormat(this); this.style.border=''">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Pricing Preview Card -->
+          <div class="pricing-summary-card">
+            <div class="pricing-details">
+              <span class="pricing-suite-name" id="guestPricingSuiteName">Couple Room</span>
+              <span class="pricing-duration" id="guestPricingDuration">Duration: 2 Nights (Rs. 25,000.00/night)</span>
+            </div>
+            <div class="pricing-amount-box">
+              <div class="pricing-total-label">Estimated Total</div>
+              <div class="pricing-total-value" id="guestPricingTotalValue">Rs. 50,000.00</div>
+            </div>
+          </div>
+
+          <!-- Action Buttons: Cancel and Confirm Booking -->
+          <div class="btn-action-group" style="display: flex; gap: 1rem; margin-top: 1.25rem;">
+            <button type="button" class="btn-secondary-modal" id="btnCancelGuestBooking" onclick="closeGuestBookingModal()">Cancel</button>
+            <button type="submit" class="btn-submit" id="btnConfirmGuestBooking" style="margin-top: 0; flex: 1;">
+              <span id="btnConfirmGuestText">Confirm Booking</span>
+              <div id="btnConfirmGuestSpinner" class="spinner" style="display: none;"></div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ========================================================
+       10. BOOKING SUCCESS MODAL (#bookingSuccessModal)
+       ======================================================== -->
+  <dialog id="bookingSuccessModal" class="login-modal booking-modal-wide">
+    <div class="modal-card">
+      <button type="button" class="modal-close-btn" onclick="closeBookingSuccessModal()" aria-label="Close Modal">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+
+      <div class="success-confirmation-card">
+        <div class="success-icon-circle">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </div>
+        <h3>Booking Confirmed!</h3>
+        <p id="successNoticeMessage">Booking Confirmed! Reference ID: <strong id="successRefInline" style="color: var(--accent-gold);">BK-XXXX</strong>. Please present this at reception upon arrival.</p>
+
+        <div class="ref-badge-card">
+          <span class="ref-label">Booking Reference ID</span>
+          <span class="ref-code" id="bookingReferenceId">BK-CONFIRMED</span>
+        </div>
+
+        <table class="booking-summary-table">
+          <tr>
+            <td>Guest Name</td>
+            <td id="successGuestName">Eleanor Vance</td>
+          </tr>
+          <tr>
+            <td>Room Assigned</td>
+            <td id="successRoomAssigned">Room 103 (Couple Room)</td>
+          </tr>
+          <tr>
+            <td>Meal Package</td>
+            <td id="successMealPackage">Room Only</td>
+          </tr>
+          <tr>
+            <td>Stay Duration</td>
+            <td id="successStayDates">2026-10-01 to 2026-10-03 (2 Nights)</td>
+          </tr>
+          <tr>
+            <td>Total Amount</td>
+            <td id="successTotalAmount">Rs. 50,000.00</td>
+          </tr>
+          <tr>
+            <td>Payment Method</td>
+            <td id="successPaymentMethod">Pay at Reception</td>
+          </tr>
+          <tr id="successTxnRow" style="display: none;">
+            <td>Transaction Ref</td>
+            <td id="successTxnRef" style="font-family: monospace; color: var(--accent-gold); font-size: 0.85rem;">-</td>
+          </tr>
+          <tr>
+            <td>Reservation Status</td>
+            <td><span style="color: #10b981; font-weight: 700;">● Confirmed</span></td>
+          </tr>
+        </table>
+
+        <div class="btn-action-group" style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: center;">
+          <button type="button" class="btn-secondary-modal" onclick="closeBookingSuccessModal(); openGuestBookingModal();">Book Another Room</button>
+          <button type="button" class="btn-submit" style="margin-top: 0; width: auto; padding: 0.8rem 2rem;" onclick="closeBookingSuccessModal()">Done</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    const staffModal = document.getElementById('staffModal');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const passwordToggle = document.getElementById('passwordToggle');
+    const eyeIconOpen = document.getElementById('eyeIconOpen');
+    const eyeIconClose = document.getElementById('eyeIconClose');
+    const alertBox = document.getElementById('alertBox');
+    const alertMessage = document.getElementById('alertMessage');
+    const passwordError = document.getElementById('passwordError');
+    const passwordErrorText = document.getElementById('passwordErrorText');
+    const btnSubmit = document.getElementById('btnSubmit');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+
+    // ========================================================
+    // STAFF PORTAL MODAL & AUTHENTICATION LOGIC
+    // ========================================================
+    function openStaffModal(e) {
+      if (e) e.preventDefault();
+      if (staffModal) {
+        if (typeof staffModal.showModal === 'function') {
+          staffModal.showModal();
+        } else {
+          staffModal.style.display = 'block';
+        }
+        clearInlineError();
+        if (usernameInput) usernameInput.focus();
+      } else {
+        window.location.href = 'login.html';
+      }
+    }
+
+    function closeStaffModal() {
+      if (staffModal) {
+        if (typeof staffModal.close === 'function') {
+          staffModal.close();
+        } else {
+          staffModal.style.display = 'none';
+        }
+        clearInlineError();
+      }
+    }
+
+    if (passwordToggle) {
+      passwordToggle.addEventListener('click', () => {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        if (type === 'password') {
+          if (eyeIconOpen) eyeIconOpen.style.display = 'block';
+          if (eyeIconClose) eyeIconClose.style.display = 'none';
+        } else {
+          if (eyeIconOpen) eyeIconOpen.style.display = 'none';
+          if (eyeIconClose) eyeIconClose.style.display = 'block';
+        }
+      });
+    }
+
+    function showAlert(message) {
+      if (alertMessage) alertMessage.textContent = message;
+      if (alertBox) alertBox.style.display = 'flex';
+    }
+
+    function hideAlert() {
+      if (alertBox) alertBox.style.display = 'none';
+    }
+
+    function showInlineError(message) {
+      if (passwordErrorText) passwordErrorText.textContent = message;
+      if (passwordError) passwordError.style.display = 'flex';
+      if (passwordInput) passwordInput.classList.add('is-invalid');
+      showAlert(message);
+    }
+
+    function clearInlineError() {
+      if (passwordError) passwordError.style.display = 'none';
+      if (passwordInput) passwordInput.classList.remove('is-invalid');
+      if (usernameInput) usernameInput.classList.remove('is-invalid');
+      hideAlert();
+    }
+
+    if (usernameInput) usernameInput.addEventListener('input', clearInlineError);
+    if (passwordInput) passwordInput.addEventListener('input', clearInlineError);
+
+    async function handleLogin(event) {
+      if (event) event.preventDefault();
+      clearInlineError();
+
+      const userVal = usernameInput.value.trim().toLowerCase();
+      const passVal = passwordInput.value;
+
+      if (!userVal || !passVal) {
+        showInlineError('Please enter both email and password.');
+        return;
+      }
+
+      setLoading(true);
+
+      const API_BASE = window.location.origin.includes('localhost:3000') ? '' : 'http://localhost:3000';
+
+      try {
+        const response = await fetch(`${API_BASE}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: userVal, password: passVal })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Invalid email or password');
+        }
+
+        setLoading(false);
+
+        const userObj = data.user || {};
+        const role = data.role || userObj.role || 'Administrator';
+        const redirectUrl = data.redirectUrl || userObj.redirectUrl || 'admin-dashboard.html';
+
+        const authUser = {
+          email: userVal,
+          username: userVal,
+          name: userObj.name || userVal,
+          role: role
+        };
+        localStorage.setItem('user', JSON.stringify(authUser));
+        localStorage.setItem('currentUser', JSON.stringify(authUser));
+        localStorage.setItem('token', data.token || ('mock-jwt-token-' + role.toLowerCase()));
+        
+        window.location.href = redirectUrl;
+      } catch (err) {
+        setLoading(false);
+        console.error('Authentication Error:', err);
+        showInlineError(err.message || 'Invalid email or password');
+      }
+    }
+
+    function setLoading(isLoading) {
+      if (isLoading) {
+        if (btnText) btnText.style.display = 'none';
+        if (btnSpinner) btnSpinner.style.display = 'block';
+        if (btnSubmit) {
+          btnSubmit.disabled = true;
+          btnSubmit.style.opacity = '0.8';
+          btnSubmit.style.cursor = 'not-allowed';
+        }
+      } else {
+        if (btnText) btnText.style.display = 'block';
+        if (btnSpinner) btnSpinner.style.display = 'none';
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.style.opacity = '1';
+          btnSubmit.style.cursor = 'pointer';
+        }
+      }
+    }
+
+    // Direct event listeners on Staff button elements
+    document.addEventListener('DOMContentLoaded', () => {
+      const btnStaff = document.getElementById('btnStaffPortal') || document.getElementById('btnOpenLoginModal');
+      if (btnStaff) {
+        btnStaff.addEventListener('click', (e) => {
+          e.preventDefault();
+          openStaffModal();
+        });
+      }
+
+      // Bind Book Now button
+      const btnBook = document.getElementById('btnOpenBookingModal') || document.getElementById('btnOpenCustomerBooking');
+      if (btnBook) {
+        btnBook.addEventListener('click', (e) => {
+          e.preventDefault();
+          openGuestBookingModal();
+        });
+      }
+
+      // If URL has #login or #staff-portal or query ?login=true, auto-open modal
+      if (window.location.hash === '#login' || window.location.hash === '#staff-portal' || window.location.search.includes('login=true')) {
+        openStaffModal();
+      }
+      if (window.location.hash === '#book' || window.location.hash === '#booking') {
+        openGuestBookingModal();
+      }
+    });
+
+
+    // ========================================================
+    // GUEST RESERVATION MODAL CONTROLS (#guestBookingModal)
+    // ========================================================
+    const guestBookingModal = document.getElementById('guestBookingModal');
+    const bookingSuccessModal = document.getElementById('bookingSuccessModal');
+
+    function getTodayDateString() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function getNextDayDateString(dateStr) {
+      const base = dateStr ? new Date(dateStr) : new Date();
+      base.setDate(base.getDate() + 1);
+      const yyyy = base.getFullYear();
+      const mm = String(base.getMonth() + 1).padStart(2, '0');
+      const dd = String(base.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function clearGuestBookingFieldErrors() {
+      hideGuestBookingAlert();
+      const fields = [
+        'guestRoomType', 'bookMealPackage', 'guestCheckInDate', 'guestCheckOutDate',
+        'guestFullName', 'guestType', 'guestIdentity', 'guestEmailAddress', 'guestPhoneNumber', 'guestPaymentMethod',
+        'ccCardholderName', 'ccCardNumber', 'ccExpiryDate', 'ccCvc'
+      ];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.border = '';
+      });
+    }
+
+    function handleGuestTypeChange() {
+      const guestTypeEl = document.getElementById('guestType');
+      const identityLabel = document.getElementById('identityLabel');
+      const identityInput = document.getElementById('guestIdentity');
+      if (!guestTypeEl || !identityLabel || !identityInput) return;
+
+      if (guestTypeEl.value === 'Foreign') {
+        identityLabel.textContent = 'PASSPORT NUMBER';
+        identityInput.placeholder = 'e.g. N1234567';
+      } else {
+        identityLabel.textContent = 'NIC NUMBER';
+        identityInput.placeholder = 'e.g. 200012345678 or 982144512V';
+      }
+    }
+
+    function handlePaymentMethodChange() {
+      const paySelect = document.getElementById('guestPaymentMethod');
+      const ccContainer = document.getElementById('creditCardDetails');
+      if (!paySelect || !ccContainer) return;
+
+      const val = (paySelect.value || '').trim();
+      const isCreditCard = val === 'Credit Card (Pay Now)' || val === 'Credit Card';
+      const ccInputs = ccContainer.querySelectorAll('.cc-input');
+
+      if (isCreditCard) {
+        ccContainer.style.display = 'block';
+        ccInputs.forEach(input => {
+          input.required = true;
+        });
+      } else {
+        ccContainer.style.display = 'none';
+        ccInputs.forEach(input => {
+          input.required = false;
+          input.style.border = '';
+        });
+        hideGuestBookingAlert();
+      }
+    }
+
+    function handleCardNumberFormat(input) {
+      if (!input) return;
+      let digits = input.value.replace(/\D/g, '').slice(0, 16);
+      let formatted = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
+      input.value = formatted;
+    }
+
+    function handleExpiryDateFormat(input) {
+      if (!input) return;
+      let digits = input.value.replace(/\D/g, '').slice(0, 4);
+      if (digits.length >= 3) {
+        input.value = digits.slice(0, 2) + '/' + digits.slice(2);
+      } else {
+        input.value = digits;
+      }
+    }
+
+    function handleCvcFormat(input) {
+      if (!input) return;
+      input.value = input.value.replace(/\D/g, '').slice(0, 4);
+    }
+
+    function handleGuestCheckInChange() {
+      clearGuestBookingFieldErrors();
+      const checkInInput = document.getElementById('guestCheckInDate');
+      const checkOutInput = document.getElementById('guestCheckOutDate');
+      if (!checkInInput || !checkOutInput) return;
+
+      const todayStr = getTodayDateString();
+      checkInInput.min = todayStr;
+
+      if (checkInInput.value && checkInInput.value < todayStr) {
+        checkInInput.value = todayStr;
+        checkInInput.style.border = '2px solid #ef4444';
+        showGuestBookingAlert('Past dates cannot be selected for Check-in.');
+      }
+
+      if (checkInInput.value) {
+        const nextDayStr = getNextDayDateString(checkInInput.value);
+        checkOutInput.min = nextDayStr;
+        if (checkOutInput.value && checkOutInput.value <= checkInInput.value) {
+          checkOutInput.value = nextDayStr;
+          showGuestBookingAlert('Check-out date must be at least one day after Check-in date.');
+        }
+      }
+      updateGuestBookingPricing();
+    }
+
+    function handleGuestCheckOutChange() {
+      clearGuestBookingFieldErrors();
+      const checkInInput = document.getElementById('guestCheckInDate');
+      const checkOutInput = document.getElementById('guestCheckOutDate');
+      if (!checkInInput || !checkOutInput) return;
+
+      if (checkInInput.value && checkOutInput.value) {
+        if (checkOutInput.value <= checkInInput.value) {
+          checkOutInput.value = '';
+          checkOutInput.style.border = '2px solid #ef4444';
+          showGuestBookingAlert('Check-out date must be at least one day after Check-in date.');
+          return;
+        }
+      }
+      updateGuestBookingPricing();
+    }
+
+    function openGuestBookingModal(preselectedRoomType = '') {
+      const modal = document.getElementById('guestBookingModal');
+      if (modal) {
+        clearGuestBookingFieldErrors();
+
+        // Check if pre-registered customer exists in localStorage
+        try {
+          const savedCust = JSON.parse(localStorage.getItem('pinnacle_customer'));
+          if (savedCust) {
+            const nameEl = document.getElementById('guestFullName');
+            const phoneEl = document.getElementById('guestPhoneNumber');
+            const emailEl = document.getElementById('guestEmailAddress');
+            if (nameEl && !nameEl.value) nameEl.value = savedCust.name || '';
+            if (phoneEl && !phoneEl.value) phoneEl.value = savedCust.phone || '';
+            if (emailEl && !emailEl.value) emailEl.value = savedCust.email || '';
+          }
+        } catch (e) {}
+
+        // Pre-select room type if passed
+        if (preselectedRoomType) {
+          const roomSelect = document.getElementById('guestRoomType');
+          if (roomSelect) {
+            for (let opt of roomSelect.options) {
+              if (opt.value.toLowerCase().includes(preselectedRoomType.toLowerCase())) {
+                opt.selected = true;
+                break;
+              }
+            }
+          }
+        }
+
+        // Initialize booking dates strictly (min = today, min checkout = checkin + 1 day)
+        const todayStr = getTodayDateString();
+        const nextDayStr = getNextDayDateString(todayStr);
+
+        const checkInInput = document.getElementById('guestCheckInDate');
+        const checkOutInput = document.getElementById('guestCheckOutDate');
+        if (checkInInput) {
+          checkInInput.min = todayStr;
+          if (!checkInInput.value || checkInInput.value < todayStr) {
+            checkInInput.value = todayStr;
+          }
+        }
+        if (checkOutInput) {
+          const minOutStr = checkInInput && checkInInput.value ? getNextDayDateString(checkInInput.value) : nextDayStr;
+          checkOutInput.min = minOutStr;
+          if (!checkOutInput.value || checkOutInput.value <= checkInInput.value) {
+            checkOutInput.value = minOutStr;
+          }
+        }
+
+        updateGuestBookingPricing();
+        handlePaymentMethodChange();
+        handleGuestTypeChange();
+        if (typeof modal.showModal === 'function') {
+          modal.showModal();
+        } else {
+          modal.style.display = 'block';
+        }
+        const nameInput = document.getElementById('guestFullName');
+        if (nameInput && !nameInput.value) nameInput.focus();
+      }
+    }
+
+    // Alias for customer booking callers
+    function openCustomerBookingModal(roomType) {
+      openGuestBookingModal(roomType);
+    }
+
+    function closeGuestBookingModal() {
+      const modal = document.getElementById('guestBookingModal');
+      if (modal) {
+        if (typeof modal.close === 'function') {
+          modal.close();
+        } else {
+          modal.style.display = 'none';
+        }
+        clearGuestBookingFieldErrors();
+        handleGuestTypeChange();
+      }
+    }
+
+    function closeCustomerBookingModal() {
+      closeGuestBookingModal();
+    }
+
+    function showGuestBookingAlert(message) {
+      const alertBox = document.getElementById('guestBookingAlertBox');
+      const alertMsg = document.getElementById('guestBookingAlertMessage');
+      if (alertMsg) alertMsg.textContent = message;
+      if (alertBox) alertBox.style.display = 'flex';
+    }
+
+    function hideGuestBookingAlert() {
+      const alertBox = document.getElementById('guestBookingAlertBox');
+      const alertMsg = document.getElementById('guestBookingAlertMessage');
+      if (alertBox) alertBox.style.display = 'none';
+      if (alertMsg) alertMsg.textContent = '';
+    }
+
+    function updateGuestBookingPricing() {
+      if (typeof window.calculateBookingTotal === 'function') {
+        const roomSelect = document.getElementById('guestRoomType') || document.getElementById('bookRoomType');
+        const mealSelect = document.getElementById('bookMealPackage') || document.getElementById('guestMealPackage');
+        const checkInInput = document.getElementById('guestCheckInDate');
+        const checkOutInput = document.getElementById('guestCheckOutDate');
+
+        const roomVal = roomSelect ? roomSelect.value : 'Couple Room';
+        const mealVal = mealSelect ? mealSelect.value : 'Room Only';
+        const inVal = checkInInput ? checkInInput.value : '';
+        const outVal = checkOutInput ? checkOutInput.value : '';
+
+        const calc = window.calculateBookingTotal(roomVal, mealVal, inVal, outVal);
+
+        const suiteNameEl = document.getElementById('guestPricingSuiteName');
+        const durationEl = document.getElementById('guestPricingDuration');
+        const totalEl = document.getElementById('guestPricingTotalValue');
+
+        if (suiteNameEl) suiteNameEl.textContent = `${calc.roomType} • ${calc.mealPackage}`;
+        if (durationEl) durationEl.textContent = calc.breakdownText;
+        if (totalEl) totalEl.textContent = `Rs. ${parseFloat(calc.total).toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        return calc;
+      }
+
+      // Fallback calculation if helper not loaded yet
+      const roomSelect = document.getElementById('guestRoomType');
+      const mealSelect = document.getElementById('bookMealPackage') || document.getElementById('guestMealPackage');
+      const checkInInput = document.getElementById('guestCheckInDate');
+      const checkOutInput = document.getElementById('guestCheckOutDate');
+      if (!roomSelect || !checkInInput || !checkOutInput) return;
+
+      const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+      const roomRate = parseFloat(selectedOption?.getAttribute('data-price')) || 25000.00;
+      const roomName = roomSelect.value;
+
+      let mealRate = 0.00;
+      let mealName = 'Room Only';
+      if (mealSelect) {
+        const mealOpt = mealSelect.options[mealSelect.selectedIndex];
+        mealRate = parseFloat(mealOpt?.getAttribute('data-price')) || 0.00;
+        mealName = mealSelect.value;
+      }
+
+      const checkIn = new Date(checkInInput.value);
+      const checkOut = new Date(checkOutInput.value);
+
+      let nights = 1;
+      if (!isNaN(checkIn.getTime()) && !isNaN(checkOut.getTime()) && checkOut > checkIn) {
+        const diff = checkOut.getTime() - checkIn.getTime();
+        nights = Math.max(1, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+      }
+
+      const ratePerNight = roomRate + mealRate;
+      const total = (nights * ratePerNight).toFixed(2);
+      const nightText = nights === 1 ? '1 Night' : `${nights} Nights`;
+
+      const suiteNameEl = document.getElementById('guestPricingSuiteName');
+      const durationEl = document.getElementById('guestPricingDuration');
+      const totalEl = document.getElementById('guestPricingTotalValue');
+
+      if (suiteNameEl) suiteNameEl.textContent = `${roomName} • ${mealName}`;
+      const formattedRoom = Number(roomRate).toLocaleString('en-LK');
+      const formattedMeal = Number(mealRate).toLocaleString('en-LK');
+      const formattedTotal = Number(total).toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      if (durationEl) durationEl.textContent = `${roomName} (Rs. ${formattedRoom}) + ${mealName} (Rs. ${formattedMeal}) × ${nightText} = Rs. ${formattedTotal}`;
+      if (totalEl) totalEl.textContent = `Rs. ${Number(total).toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    async function handleGuestBookingSubmit(event) {
+      if (event && typeof event.preventDefault === 'function') {
+        event.preventDefault();
+      }
+      clearGuestBookingFieldErrors();
+
+      const roomSelect = document.getElementById('guestRoomType');
+      const mealSelect = document.getElementById('bookMealPackage') || document.getElementById('guestMealPackage');
+      const checkInInput = document.getElementById('guestCheckInDate');
+      const checkOutInput = document.getElementById('guestCheckOutDate');
+      const nameInput = document.getElementById('guestFullName');
+      const emailInput = document.getElementById('guestEmailAddress');
+      const phoneInput = document.getElementById('guestPhoneNumber');
+      const paySelect = document.getElementById('guestPaymentMethod');
+
+      const guestName = nameInput ? nameInput.value.trim() : '';
+      const email = emailInput ? emailInput.value.trim() : '';
+      const phone = phoneInput ? phoneInput.value.trim() : '';
+      const roomType = roomSelect ? roomSelect.value.trim() : '';
+      const mealPackage = mealSelect ? mealSelect.value.trim() : 'Room Only';
+      const checkIn = checkInInput ? checkInInput.value : '';
+      const checkOut = checkOutInput ? checkOutInput.value : '';
+      const paymentMethod = paySelect ? paySelect.value : 'Pay at Reception';
+
+      // 1. Validate Room Selection
+      if (!roomType) {
+        if (roomSelect) {
+          roomSelect.style.border = '2px solid #ef4444';
+          roomSelect.focus();
+        }
+        showGuestBookingAlert('Please select a valid Room Type.');
+        return;
+      }
+
+      // 2. Validate Check-in Date
+      const todayStr = getTodayDateString();
+      if (!checkIn) {
+        if (checkInInput) {
+          checkInInput.style.border = '2px solid #ef4444';
+          checkInInput.focus();
+        }
+        showGuestBookingAlert('Please select a valid Check-in date.');
+        return;
+      }
+      if (checkIn < todayStr) {
+        if (checkInInput) {
+          checkInInput.style.border = '2px solid #ef4444';
+          checkInInput.focus();
+        }
+        showGuestBookingAlert('Past dates cannot be selected for Check-in.');
+        return;
+      }
+
+      // 3. Validate Check-out Date
+      if (!checkOut) {
+        if (checkOutInput) {
+          checkOutInput.style.border = '2px solid #ef4444';
+          checkOutInput.focus();
+        }
+        showGuestBookingAlert('Please select a valid Check-out date.');
+        return;
+      }
+      if (checkOut <= checkIn) {
+        if (checkOutInput) {
+          checkOutInput.style.border = '2px solid #ef4444';
+          checkOutInput.focus();
+        }
+        showGuestBookingAlert('Check-out date must be at least one day after Check-in date.');
+        return;
+      }
+
+      // 4. Validate Guest Full Name: at least 3 chars, max 50 chars, only letters and spaces
+      const nameRegex = /^[a-zA-Z\s]{3,50}$/;
+      if (!nameRegex.test(guestName)) {
+        if (nameInput) {
+          nameInput.style.border = '2px solid #ef4444';
+          nameInput.focus();
+        }
+        showGuestBookingAlert('Guest Full Name must be between 3 and 50 characters and contain only letters and spaces.');
+        return;
+      }
+
+      // 5. Validate Guest Identity (NIC / Passport)
+      const guestTypeEl = document.getElementById('guestType');
+      const identityInput = document.getElementById('guestIdentity');
+      const guestTypeVal = guestTypeEl ? guestTypeEl.value : 'Local';
+      const identityVal = identityInput ? identityInput.value.trim() : '';
+
+      if (!identityVal) {
+        if (identityInput) {
+          identityInput.style.border = '2px solid #ef4444';
+          identityInput.focus();
+        }
+        showGuestBookingAlert(guestTypeVal === 'Foreign' ? 'Please enter a valid Passport Number.' : 'Please enter a valid NIC Number.');
+        return;
+      }
+
+      // 5. Validate Email Address: strictly standard email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+      if (!emailRegex.test(email)) {
+        if (emailInput) {
+          emailInput.style.border = '2px solid #ef4444';
+          emailInput.focus();
+        }
+        showGuestBookingAlert('Please enter a valid Email Address (e.g. name@example.com).');
+        return;
+      }
+
+      // 6. Validate Phone Number: Sri Lankan pattern (0771234567 or +94771234567)
+      const cleanPhone = phone.replace(/\s+/g, '');
+      const phoneRegex = /^(?:\+94|0)[0-9]{9}$/;
+      if (!phoneRegex.test(cleanPhone)) {
+        if (phoneInput) {
+          phoneInput.style.border = '2px solid #ef4444';
+          phoneInput.focus();
+        }
+        showGuestBookingAlert('Please enter a valid Phone Number (e.g. 0771234567 or +94771234567).');
+        return;
+      }
+
+      // 7. Validate Payment Method & Credit Card Details
+      let payment_status = 'Pending';
+      let transaction_ref = null;
+      let card_last4 = null;
+      let finalPaymentMethod = paymentMethod;
+
+      const isCreditCard = paymentMethod === 'Credit Card (Pay Now)' || paymentMethod === 'Credit Card';
+
+      if (isCreditCard) {
+        finalPaymentMethod = 'Credit Card';
+        const cardholderInput = document.getElementById('ccCardholderName');
+        const cardNumberInput = document.getElementById('ccCardNumber');
+        const expiryDateInput = document.getElementById('ccExpiryDate');
+        const cvcInput = document.getElementById('ccCvc');
+
+        const cardholder = cardholderInput ? cardholderInput.value.trim() : '';
+        const rawCard = cardNumberInput ? cardNumberInput.value.replace(/\D/g, '') : '';
+        const rawExpiry = expiryDateInput ? expiryDateInput.value.trim() : '';
+        const rawCvc = cvcInput ? cvcInput.value.trim() : '';
+
+        // Validate Cardholder Name
+        if (!cardholder || cardholder.length < 2) {
+          if (cardholderInput) {
+            cardholderInput.style.border = '2px solid #ef4444';
+            cardholderInput.focus();
+          }
+          showGuestBookingAlert('Please enter the Cardholder Name.');
+          return;
+        }
+
+        // Validate 16-digit Card Number
+        if (rawCard.length !== 16) {
+          if (cardNumberInput) {
+            cardNumberInput.style.border = '2px solid #ef4444';
+            cardNumberInput.focus();
+          }
+          showGuestBookingAlert('Please enter a valid 16-digit Credit Card number.');
+          return;
+        }
+
+        // Validate basic MM/YY expiry format
+        const expRegex = /^(0[1-9]|1[0-2])\/?([0-9]{2})$/;
+        const expMatch = rawExpiry.match(expRegex);
+        if (!expMatch) {
+          if (expiryDateInput) {
+            expiryDateInput.style.border = '2px solid #ef4444';
+            expiryDateInput.focus();
+          }
+          showGuestBookingAlert('Please enter a valid Expiry Date in MM/YY format (e.g. 12/28).');
+          return;
+        }
+
+        // Validate CVV / CVC (3-digit masked password input)
+        if (rawCvc.length < 3 || rawCvc.length > 4) {
+          if (cvcInput) {
+            cvcInput.style.border = '2px solid #ef4444';
+            cvcInput.focus();
+          }
+          showGuestBookingAlert('Please enter a valid 3-digit CVV / CVC code.');
+          return;
+        }
+
+        payment_status = 'Paid';
+        card_last4 = rawCard.slice(-4);
+        transaction_ref = 'TXN-CC-' + Date.now();
+      } else {
+        payment_status = 'Pending';
+      }
+
+      // Calculate total amount for payload
+      const pricing = typeof window.calculateBookingTotal === 'function'
+        ? window.calculateBookingTotal(roomType, mealPackage, checkIn, checkOut)
+        : null;
+      const totalAmount = pricing ? pricing.total : null;
+
+      setGuestBookingLoading(true);
+
+      const API_BASE = window.location.origin.includes('localhost:3000') ? '' : 'http://localhost:3000';
+
+      try {
+        const response = await fetch(`${API_BASE}/api/bookings`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            guest_name: guestName,
+            guest_type: document.getElementById('guestType') ? document.getElementById('guestType').value : 'Local',
+            id_passport: document.getElementById('guestIdentity') ? document.getElementById('guestIdentity').value.trim() : '',
+            guest_nic: (document.getElementById('guestType') && document.getElementById('guestType').value === 'Local')
+              ? (document.getElementById('guestIdentity') ? document.getElementById('guestIdentity').value.trim() : null)
+              : null,
+            email: email,
+            phone: cleanPhone,
+            room_type: roomType,
+            meal_package: mealPackage,
+            check_in_date: checkIn,
+            check_out_date: checkOut,
+            check_in: checkIn,
+            check_out: checkOut,
+            payment_method: finalPaymentMethod,
+            payment_status: payment_status,
+            transaction_ref: transaction_ref,
+            card_last4: card_last4,
+            total_amount: totalAmount
+          })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Failed to complete reservation. Please try again.');
+        }
+
+        setGuestBookingLoading(false);
+        closeGuestBookingModal();
+
+        // Clear all form inputs on success
+        const bookingForm = document.getElementById('guestBookingForm');
+        if (bookingForm) {
+          bookingForm.reset();
+          if (typeof handleGuestTypeChange === 'function') handleGuestTypeChange();
+        }
+
+        // Populate and open Booking Success Modal
+        openBookingSuccessModal(data, {
+          guestName,
+          roomType,
+          mealPackage,
+          checkIn,
+          checkOut,
+          paymentMethod: finalPaymentMethod,
+          payment_status: payment_status,
+          transaction_ref: transaction_ref,
+          card_last4: card_last4
+        });
+
+      } catch (err) {
+        setGuestBookingLoading(false);
+        showGuestBookingAlert(err.message || 'Reservation submission error.');
+      }
+    }
+
+    function setGuestBookingLoading(isLoading) {
+      const btnText = document.getElementById('btnConfirmGuestText');
+      const btnSpinner = document.getElementById('btnConfirmGuestSpinner');
+      const btn = document.getElementById('btnConfirmGuestBooking');
+      if (isLoading) {
+        if (btnText) btnText.style.display = 'none';
+        if (btnSpinner) btnSpinner.style.display = 'block';
+        if (btn) btn.disabled = true;
+      } else {
+        if (btnText) btnText.style.display = 'block';
+        if (btnSpinner) btnSpinner.style.display = 'none';
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function openBookingSuccessModal(resData, meta) {
+      const modal = document.getElementById('bookingSuccessModal');
+      if (!modal) return;
+
+      const booking = resData.booking || {};
+      const refId = resData.booking_id || resData.reference_id || booking.booking_id || 'BK-CONFIRMED';
+      const assignedRoom = resData.room_number || booking.room_number || 'Unassigned';
+      const mealPkg = resData.meal_package || booking.meal_package || meta.mealPackage || 'Room Only';
+      const totalAmount = (resData.total_amount !== undefined && resData.total_amount !== null)
+        ? `Rs. ${parseFloat(resData.total_amount).toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+        : (booking.total_amount ? `Rs. ${parseFloat(booking.total_amount).toLocaleString('en-LK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : 'Rs. 50,000.00');
+
+      const dIn = new Date(meta.checkIn);
+      const dOut = new Date(meta.checkOut);
+      const nights = booking.nights || Math.max(1, Math.ceil((dOut - dIn) / (1000 * 60 * 60 * 24)));
+
+      const refIdEl = document.getElementById('bookingReferenceId');
+      const refInlineEl = document.getElementById('successRefInline');
+      const nameEl = document.getElementById('successGuestName');
+      const roomEl = document.getElementById('successRoomAssigned');
+      const mealEl = document.getElementById('successMealPackage');
+      const datesEl = document.getElementById('successStayDates');
+      const totalEl = document.getElementById('successTotalAmount');
+      const payEl = document.getElementById('successPaymentMethod');
+
+      if (refIdEl) refIdEl.textContent = refId;
+      if (refInlineEl) refInlineEl.textContent = refId;
+      if (nameEl) nameEl.textContent = meta.guestName;
+      if (roomEl) roomEl.textContent = assignedRoom === 'Unassigned' ? `Unassigned (${meta.roomType})` : `Room ${assignedRoom} (${meta.roomType})`;
+      if (mealEl) mealEl.textContent = mealPkg;
+      if (datesEl) datesEl.textContent = `${meta.checkIn} to ${meta.checkOut} (${nights} Night${nights > 1 ? 's' : ''})`;
+      if (totalEl) totalEl.textContent = totalAmount;
+
+      if (payEl) {
+        if (meta.paymentMethod === 'Credit Card' || meta.payment_status === 'Paid') {
+          payEl.innerHTML = `<span style="color: #10b981; font-weight: 700;">Credit Card (Paid)</span>`;
+        } else {
+          payEl.textContent = meta.paymentMethod || 'Pay at Reception';
+        }
+      }
+
+      const txnRow = document.getElementById('successTxnRow');
+      const txnEl = document.getElementById('successTxnRef');
+      const txn = resData.transaction_ref || meta.transaction_ref;
+      if (txnRow && txnEl) {
+        if (txn) {
+          txnEl.textContent = txn;
+          txnRow.style.display = 'table-row';
+        } else {
+          txnRow.style.display = 'none';
+        }
+      }
+
+      if (typeof modal.showModal === 'function') {
+        modal.showModal();
+      } else {
+        modal.style.display = 'block';
+      }
+    }
+
+    function closeBookingSuccessModal() {
+      const modal = document.getElementById('bookingSuccessModal');
+      if (modal) {
+        if (typeof modal.close === 'function') {
+          modal.close();
+        } else {
+          modal.style.display = 'none';
+        }
+      }
+    }
+
+    // Modal Backdrop Close Event Delegation
+    [guestBookingModal, bookingSuccessModal, staffModal].forEach(modal => {
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            if (typeof modal.close === 'function') {
+              modal.close();
+            } else {
+              modal.style.display = 'none';
+            }
+          }
+        });
+      }
+    });
+
+    function handleNewsletter(e) {
+      e.preventDefault();
+      alert('Thank you for subscribing to Pinnacle Bay 96 Private Privileges. Welcome to our sanctuary.');
+      e.target.reset();
+    }
+  </script>
+</body>
+</html>
+
