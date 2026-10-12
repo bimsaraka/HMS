@@ -39,6 +39,29 @@ app.get('/api/db-status', (req, res) => {
   });
 });
 
+// SMTP Status & Test Endpoints
+app.get('/api/smtp-status', async (req, res) => {
+  try {
+    const { verifyConnection } = require('./utils/emailService');
+    const result = await verifyConnection();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/test-email', async (req, res) => {
+  try {
+    const { sendTestEmail } = require('./utils/emailService');
+    const target = req.body && req.body.email ? req.body.email : process.env.EMAIL_USER;
+    const result = await sendTestEmail(target);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+
 // ======================================================================
 // MODULAR ROLE-BASED ROUTES (MVC) & BACKWARD-COMPATIBLE ALIASES
 // ======================================================================
@@ -79,6 +102,7 @@ app.use('/api/transactions', (req, res, next) => { req.url = '/transactions' + (
 app.use('/api/payroll', (req, res, next) => { req.url = '/payroll' + (req.url === '/' ? '' : req.url); financeRoutes(req, res, next); });
 app.use('/api/employees', (req, res, next) => { req.url = '/employees' + (req.url === '/' ? '' : req.url); financeRoutes(req, res, next); });
 app.use('/api/bills', (req, res, next) => { req.url = '/bills' + (req.url === '/' ? '' : req.url); financeRoutes(req, res, next); });
+app.use('/api/payments', (req, res, next) => { req.url = '/payments' + (req.url === '/' ? '' : req.url); financeRoutes(req, res, next); });
 
 // Reports & Audits (Global Aliases)
 app.use('/api/reports', (req, res, next) => { req.url = '/reports' + (req.url === '/' ? '' : req.url); adminRoutes(req, res, next); });

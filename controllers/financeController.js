@@ -1,4 +1,5 @@
 const { sql, poolPromise, fallbackDb } = require('../config/db');
+const { sendPaymentReceipt } = require('../utils/emailService');
 
 class FinanceController {
   // 1. Strict Active Checked-In Guests for Invoice Dropdown
@@ -325,6 +326,41 @@ class FinanceController {
         fallbackDb.transactions.unshift(txn);
       }
 
+      // Asynchronously trigger payment receipt email if invoice created as Paid
+      if (finalStatus.toLowerCase() === 'paid') {
+        (async () => {
+          try {
+            let gEmail = (req.body.guest_email || req.body.email || '').trim();
+            if (!gEmail && pool && finalBookingId) {
+              const bRes = await pool.request()
+                .input('bid', sql.VarChar, finalBookingId)
+                .query(`SELECT COALESCE(guest_email, email, '') AS guest_email FROM Bookings WHERE booking_id = @bid OR CAST(id AS VARCHAR) = @bid`);
+              if (bRes.recordset.length > 0 && bRes.recordset[0].guest_email) {
+                gEmail = bRes.recordset[0].guest_email.trim();
+              }
+            }
+            if (!gEmail && finalBookingId) {
+              const bk = fallbackDb.bookings.find(b => String(b.booking_id) === finalBookingId || String(b.id) === finalBookingId);
+              if (bk) gEmail = (bk.guest_email || bk.email || '').trim();
+            }
+            if (gEmail) {
+              sendPaymentReceipt({
+                guest_name: finalGuest,
+                guest_email: gEmail,
+                invoice_no: invoice_id,
+                booking_id: finalBookingId,
+                payment_method: finalMethod,
+                amount_paid: finalTotal,
+                balance_due: 0,
+                payment_date: new Date().toLocaleDateString('en-GB')
+              }).catch(err => console.error('[EmailService] Receipt email failed:', err.message));
+            }
+          } catch (e) {
+            console.error('[EmailService] Error resolving guest email for receipt:', e.message);
+          }
+        })();
+      }
+
       return res.status(201).json({
         success: true,
         message: 'Invoice generated successfully',
@@ -420,19 +456,23 @@ class FinanceController {
     }
   }
 
-  // 4. Settle / Pay Invoice (Atomic with Bookings and Transactions)
+  // 4. Settle / Pay Invoice (Atomic with Bookings, Transactions & Automated Email Receipt)
   static async settleInvoice(req, res) {
     try {
-      const { id } = req.params;
+      const id = req.params.id || req.body.invoice_no || req.body.invoice_id || req.body.id || req.body.payment_id;
       const { payment_method } = req.body;
-      const finalMethod = payment_method || 'Cash';
+      const finalMethod = payment_method || req.body.method || 'Cash';
+
+      if (!id) {
+        return res.status(400).json({ success: false, message: 'Invoice ID or payment reference is required' });
+      }
 
       let invData = null;
       const pool = await poolPromise;
       if (pool) {
         // 1. Fetch current invoice record
         const invRes = await pool.request()
-          .input('id', sql.VarChar, id)
+          .input('id', sql.VarChar, String(id))
           .query(`SELECT * FROM Invoices WHERE invoice_id = @id OR CAST(id AS VARCHAR) = @id`);
         
         if (invRes.recordset.length > 0) {
@@ -441,7 +481,7 @@ class FinanceController {
 
         // 2. Update Invoices
         await pool.request()
-          .input('id', sql.VarChar, id)
+          .input('id', sql.VarChar, String(id))
           .input('method', sql.VarChar, finalMethod)
           .query(`
             UPDATE Invoices 
@@ -467,7 +507,7 @@ class FinanceController {
         }
 
         // 4. Atomically insert into Transactions
-        const finalAmt = invData ? parseFloat(invData.total_amount) : 0;
+        const finalAmt = invData ? parseFloat(invData.total_amount || invData.amount || 0) : 0;
         const guestName = invData ? invData.guest_name : 'Guest';
         const txnId = `TXN-${Math.floor(5000 + Math.random() * 5000)}`;
 
@@ -488,7 +528,7 @@ class FinanceController {
       }
 
       // Sync in-memory fallbackDb
-      const inv = fallbackDb.invoices.find(i => i.invoice_id === id || String(i.id) === String(id));
+      const inv = fallbackDb.invoices.find(i => i.invoice_id === String(id) || String(i.id) === String(id));
       if (inv) {
         inv.status = 'Paid';
         inv.payment_status = 'Paid';
@@ -512,6 +552,64 @@ class FinanceController {
         };
         fallbackDb.transactions.unshift(txn);
       }
+
+      // Resolve guest email, name, and payment data for automated receipt dispatch
+      let guestEmail = (req.body.guest_email || req.body.email || '').trim();
+      let guestName = req.body.guest_name || (invData ? invData.guest_name : (inv ? (inv.guest_name || inv.guest) : 'Valued Guest'));
+      const bookingId = (invData ? invData.booking_id : (inv ? inv.booking_id : req.body.booking_id)) || '';
+      const invoiceId = (invData ? invData.invoice_id : (inv ? inv.invoice_id : id)) || id;
+      const amountPaid = invData ? parseFloat(invData.total_amount || invData.amount || 0) : (inv ? parseFloat(inv.total_amount || inv.amount || 0) : (parseFloat(req.body.amount_paid || req.body.amount) || 0));
+      const balanceDue = parseFloat(req.body.balance_due) || 0;
+
+      // Asynchronously resolve email and dispatch receipt without blocking response
+      (async () => {
+        try {
+          if (!guestEmail && pool && bookingId) {
+            const bRes = await pool.request()
+              .input('bid', sql.VarChar, String(bookingId))
+              .query(`SELECT COALESCE(guest_email, email, '') AS guest_email, guest_name FROM Bookings WHERE booking_id = @bid OR CAST(id AS VARCHAR) = @bid`);
+            if (bRes.recordset.length > 0 && bRes.recordset[0].guest_email) {
+              guestEmail = bRes.recordset[0].guest_email.trim();
+              if (!guestName || guestName === 'Valued Guest') guestName = bRes.recordset[0].guest_name;
+            }
+          }
+
+          if (!guestEmail && pool && guestName && guestName !== 'Valued Guest') {
+            const bRes = await pool.request()
+              .input('gname', sql.VarChar, guestName)
+              .query(`SELECT TOP 1 COALESCE(guest_email, email, '') AS guest_email FROM Bookings WHERE guest_name = @gname AND (guest_email IS NOT NULL OR email IS NOT NULL) ORDER BY id DESC`);
+            if (bRes.recordset.length > 0 && bRes.recordset[0].guest_email) {
+              guestEmail = bRes.recordset[0].guest_email.trim();
+            }
+          }
+
+          if (!guestEmail) {
+            const bk = fallbackDb.bookings.find(b => 
+              (bookingId && (String(b.booking_id) === String(bookingId) || String(b.id) === String(bookingId))) ||
+              (guestName && guestName !== 'Valued Guest' && b.guest_name === guestName)
+            );
+            if (bk) {
+              guestEmail = (bk.guest_email || bk.email || '').trim();
+              if (!guestName || guestName === 'Valued Guest') guestName = bk.guest_name;
+            }
+          }
+
+          if (guestEmail) {
+            sendPaymentReceipt({
+              guest_name: guestName,
+              guest_email: guestEmail,
+              invoice_no: invoiceId,
+              booking_id: bookingId,
+              payment_method: finalMethod,
+              amount_paid: amountPaid,
+              balance_due: balanceDue || 0,
+              payment_date: new Date().toLocaleDateString('en-GB')
+            }).catch(err => console.error('[EmailService] Receipt email failed:', err.message));
+          }
+        } catch (emailLookupErr) {
+          console.error('[EmailService] Error resolving guest email for payment receipt:', emailLookupErr.message);
+        }
+      })();
 
       return res.status(200).json({ success: true, message: 'Invoice settled successfully' });
     } catch (err) {
