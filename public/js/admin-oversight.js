@@ -3,6 +3,37 @@
  * Global Admin Return & Persistent Oversight Navigation Banner
  */
 (function() {
+  // Transparent Bearer Token Injector for outgoing API calls from authenticated sessions
+  if (typeof window !== 'undefined' && window.fetch) {
+    const _origFetch = window.fetch;
+    window.fetch = function(input, init) {
+      try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        if (token) {
+          init = init || {};
+          let headers = init.headers || {};
+          if (typeof Headers !== 'undefined' && headers instanceof Headers) {
+            if (!headers.has('Authorization')) {
+              headers.set('Authorization', 'Bearer ' + token);
+            }
+          } else if (Array.isArray(headers)) {
+            const hasAuth = headers.some(([k]) => k.toLowerCase() === 'authorization');
+            if (!hasAuth) headers.push(['Authorization', 'Bearer ' + token]);
+          } else {
+            const hasAuth = Object.keys(headers).some(k => k.toLowerCase() === 'authorization');
+            if (!hasAuth) {
+              headers = Object.assign({}, headers, { 'Authorization': 'Bearer ' + token });
+            }
+          }
+          init.headers = headers;
+        }
+      } catch (e) {
+        // pass through
+      }
+      return _origFetch.call(this, input, init);
+    };
+  }
+
   function initAdminOversight() {
     const currentPath = window.location.pathname.toLowerCase();
     

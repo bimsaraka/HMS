@@ -97,31 +97,39 @@ class AuthController {
         });
       }
 
+      const usernameVal = user.username || user.user_id || user.name || user.email;
+      const userIdVal = user.id !== undefined ? user.id : (user.user_id || 1);
       const redirectUrl = getRedirectUrlForRole(user.role);
+
       const tokenPayload = {
-        id: user.id || user.user_id,
-        user_id: user.user_id || user.id,
-        name: user.name,
-        email: user.email,
+        id: userIdVal,
+        username: usernameVal,
         role: user.role,
-        designation: user.designation
+        user_id: user.user_id || userIdVal,
+        name: user.name || usernameVal,
+        email: user.email
       };
 
-      const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '24h' });
+      const secret = process.env.JWT_SECRET || JWT_SECRET;
+      const expiresIn = process.env.JWT_EXPIRES_IN || '24h';
+      const token = jwt.sign(tokenPayload, secret, { expiresIn });
 
       return res.status(200).json({
         success: true,
         message: 'Login successful!',
         token,
         redirect: redirectUrl,
+        redirectUrl: redirectUrl,
         user: {
-          id: user.id || user.user_id,
-          user_id: user.user_id,
-          name: user.name,
-          email: user.email,
+          id: userIdVal,
+          username: usernameVal,
           role: user.role,
+          user_id: user.user_id,
+          name: user.name || usernameVal,
+          email: user.email,
           designation: user.designation,
-          redirect: redirectUrl
+          redirect: redirectUrl,
+          redirectUrl: redirectUrl
         }
       });
     } catch (err) {

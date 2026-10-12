@@ -2,6 +2,14 @@ const express = require('express');
 const router = express.Router();
 const FinanceController = require('../controllers/financeController');
 const AdminController = require('../controllers/adminController');
+const { verifyToken, authorizeRoles } = require('../middleware/authMiddleware');
+
+// Protect all Finance & Billing routes: Requires verifyToken and authorizeRoles('admin', 'accountant')
+router.use(verifyToken, authorizeRoles('admin', 'accountant'));
+
+// Default root / billing aliases
+router.get('/', FinanceController.getInvoices);
+router.get('/billing', FinanceController.getInvoices);
 
 // Staff / Employee List for Finance & Payroll
 router.get('/employees', FinanceController.getEmployees);

@@ -12,6 +12,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const receptionRoutes = require('./routes/receptionRoutes');
 const opsRoutes = require('./routes/opsRoutes');
 const financeRoutes = require('./routes/financeRoutes');
+const chatbotRoutes = require('./routes/chatbotRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,6 +26,12 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));
+});
+app.get('/home', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+app.get('/landing', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // DB Status check
@@ -107,6 +114,9 @@ app.use('/api/payments', (req, res, next) => { req.url = '/payments' + (req.url 
 // Reports & Audits (Global Aliases)
 app.use('/api/reports', (req, res, next) => { req.url = '/reports' + (req.url === '/' ? '' : req.url); adminRoutes(req, res, next); });
 app.use('/api/shift-audit', (req, res, next) => { req.url = '/shift-audit' + (req.url === '/' ? '' : req.url); adminRoutes(req, res, next); });
+
+// Smart Assistant Chatbot
+app.use('/api/chatbot', chatbotRoutes);
 
 // JSON 404 Handler for /api/* routes (prevents HTML error returning to fetch calls)
 app.use('/api', (req, res) => {
